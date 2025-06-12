@@ -9,7 +9,7 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { lastValueFrom } from 'rxjs';
-import { GetRecommendationQueryDto } from 'libs/common';
+import { GetBeerPairingDto } from 'libs/common';
 
 @ApiTags('Beer Machine Recommendations')
 @Controller('beer-pairings')
