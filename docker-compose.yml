@@ -1,0 +1,102 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: karhub-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - karhub-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: karhub-redis
+    ports:
+      - '6379:6379'
+    networks:
+      - karhub-net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: karhub-rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    networks:
+      - karhub-net
+
+  api-gateway:
+    container_name: karhub-api-gateway
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: api-gateway
+    ports:
+      - '${PORT}:${PORT}'
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      beer-catalog:
+        condition: service_started
+      beer-machine:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+      redis:
+        condition: service_started
+
+    networks:
+      - karhub-net
+
+  beer-catalog:
+    container_name: karhub-beer-catalog
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: beer-catalog
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      redis:
+        condition: service_started
+    networks:
+      - karhub-net
+
+  beer-machine:
+    container_name: karhub-beer-machine
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: beer-machine
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - karhub-net
+
+networks:
+  karhub-net:
+    driver: bridge
