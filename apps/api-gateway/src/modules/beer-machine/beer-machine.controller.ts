@@ -30,7 +30,7 @@ export class BeerMachineController {
   @ApiResponse({ status: 400, description: 'Invalid temperature provided.' })
   async getBeerPairing(
     @Query(new ValidationPipe({ transform: true }))
-    query: GetRecommendationQueryDto,
+    query: GetBeerPairingDto,
   ) {
     const response = await lastValueFrom(
       this.beerMachineClient.send(
@@ -39,7 +39,7 @@ export class BeerMachineController {
       ),
     );
 
-    if (!response || !response.playlist) {
+    if (!response) {
       throw new NotFoundException(
         'A suitable playlist could not be found for the recommended beer.',
       );
