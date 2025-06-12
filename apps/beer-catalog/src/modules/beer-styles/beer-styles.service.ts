@@ -10,13 +10,11 @@ import {
   FilterConfig,
   parseOrderBy,
   parseWhere,
-} from 'libs/common';
-import {
   CreateBeerStyleDto,
   QueryBeerStyleDto,
   UpdateBeerStyleDto,
-} from './dto';
-import { BeerStyleEntity } from './entities';
+  BeerStyleEntity,
+} from 'libs/common';
 
 const FILTER_CONFIG: FilterConfig = {
   name: {

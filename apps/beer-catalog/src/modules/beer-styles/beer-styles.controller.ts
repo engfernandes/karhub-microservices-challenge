@@ -1,109 +1,38 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-  ParseIntPipe,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { BeerStylesService } from './beer-styles.service';
 import {
   CreateBeerStyleDto,
   QueryBeerStyleDto,
   UpdateBeerStyleDto,
-} from './dto';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiOkResponse,
-  ApiCreatedResponse,
-  ApiNotFoundResponse,
-  ApiConflictResponse,
-  ApiNoContentResponse,
-} from '@nestjs/swagger';
-import { ResponseEntity } from 'libs/common';
-import { BeerStyleEntity } from './entities';
+} from 'libs/common';
 
-@ApiTags('Beer Styles')
-@Controller('beer-styles')
+@Controller()
 export class BeerStylesController {
   constructor(private readonly beerStylesService: BeerStylesService) {}
 
-  @Post()
-  @ApiOperation({ summary: 'Create a new beer style' })
-  @ApiCreatedResponse({
-    description: 'The beer style has been successfully created.',
-    type: ResponseEntity,
-  })
-  @ApiConflictResponse({
-    description: 'A beer style with this name already exists.',
-  })
-  create(
-    @Body() createBeerStyleDto: CreateBeerStyleDto,
-  ): Promise<ResponseEntity<BeerStyleEntity>> {
-    return this.beerStylesService.create(createBeerStyleDto);
+  @MessagePattern({ cmd: 'create_beer_style' })
+  create(@Payload() createDto: CreateBeerStyleDto) {
+    return this.beerStylesService.create(createDto);
   }
 
-  @Get()
-  @ApiOperation({
-    summary: 'Retrieve all beer styles with pagination and filters',
-  })
-  @ApiOkResponse({
-    description: 'A paginated list of beer styles.',
-    type: ResponseEntity,
-  })
-  findAll(
-    @Query() query: QueryBeerStyleDto,
-  ): Promise<ResponseEntity<BeerStyleEntity[]>> {
+  @MessagePattern({ cmd: 'find_all_beer_styles' })
+  findAll(@Payload() query: QueryBeerStyleDto) {
     return this.beerStylesService.findAll(query);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Retrieve a single beer style by its ID' })
-  @ApiOkResponse({
-    description: 'The requested beer style.',
-    type: ResponseEntity,
-  })
-  @ApiNotFoundResponse({
-    description: 'Beer style with the given ID not found.',
-  })
-  findOne(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<ResponseEntity<BeerStyleEntity>> {
+  @MessagePattern({ cmd: 'find_one_beer_style' })
+  findOne(@Payload() id: number) {
     return this.beerStylesService.findOne(id);
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update an existing beer style' })
-  @ApiOkResponse({
-    description: 'The beer style has been successfully updated.',
-    type: ResponseEntity,
-  })
-  @ApiNotFoundResponse({
-    description: 'Beer style with the given ID not found.',
-  })
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateBeerStyleDto: UpdateBeerStyleDto,
-  ): Promise<ResponseEntity<BeerStyleEntity>> {
-    return this.beerStylesService.update(id, updateBeerStyleDto);
+  @MessagePattern({ cmd: 'update_beer_style' })
+  update(@Payload() payload: { id: number; updateDto: UpdateBeerStyleDto }) {
+    return this.beerStylesService.update(payload.id, payload.updateDto);
   }
 
-  @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Remove a beer style' })
-  @ApiNoContentResponse({
-    description: 'The beer style has been successfully removed.',
-  })
-  @ApiNotFoundResponse({
-    description: 'Beer style with the given ID not found.',
-  })
-  remove(@Param('id', ParseIntPipe) id: number): Promise<ResponseEntity<void>> {
+  @MessagePattern({ cmd: 'remove_beer_style' })
+  remove(@Payload() id: number) {
     return this.beerStylesService.remove(id);
   }
 }

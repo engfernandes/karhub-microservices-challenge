@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
-import { BeerCatalogController } from './beer-catalog.controller';
-import { BeerCatalogService } from './beer-catalog.service';
 import { PrismaModule } from 'libs/core';
+import { BeerStylesModule } from './modules';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [PrismaModule],
-  controllers: [BeerCatalogController],
-  providers: [BeerCatalogService],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
+    BeerStylesModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class BeerCatalogModule {}

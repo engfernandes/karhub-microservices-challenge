@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BeerStylesService } from './beer-styles.service';
 import { PrismaService } from 'libs/core';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import {
   CreateBeerStyleDto,
   QueryBeerStyleDto,
   UpdateBeerStyleDto,
-} from './dto';
-import { ConflictException, NotFoundException } from '@nestjs/common';
-import { BeerStyleEntity } from './entities';
-import { ResponseEntity } from 'libs/common';
+  ResponseEntity,
+  BeerStyleEntity,
+} from 'libs/common';
 import * as utils from 'libs/common/utils';
 
 jest.mock('libs/common/utils', () => ({
