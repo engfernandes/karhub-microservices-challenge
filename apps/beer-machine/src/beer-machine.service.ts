@@ -15,7 +15,9 @@ export class BeerMachineService {
 
   async getBeerPairing(
     temperature: number,
-  ): Promise<{ beerStyle: string; playlist: SpotifyPlaylist | null }> {
+  ): Promise<
+    ResponseEntity<{ beerStyle: string; playlist: SpotifyPlaylist | null }>
+  > {
     this.logger.log('Fetching all beer styles from beer-catalog...');
     const stylesResponse$ = this.beerCatalogClient.send<
       ResponseEntity<BeerStyleEntity[]>
@@ -40,10 +42,13 @@ export class BeerMachineService {
 
     const playlist = await this.spotifyService.searchPlaylist(bestStyle.name);
 
-    return {
-      beerStyle: bestStyle.name,
-      playlist,
-    };
+    return new ResponseEntity(
+      {
+        beerStyle: bestStyle.name,
+        playlist: playlist || null,
+      },
+      undefined,
+    );
   }
 
   private findBestBeerStyle(
