@@ -1,3 +1,4 @@
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import {
   Controller,
   Get,
@@ -11,6 +12,7 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
@@ -65,6 +67,8 @@ export class BeerStylesController {
     description: 'A paginated list of beer styles.',
     type: ResponseEntity,
   })
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async findAll(
     @Query() query: QueryBeerStyleDto,
   ): Promise<ResponseEntity<BeerStyleEntity[]>> {
@@ -84,6 +88,8 @@ export class BeerStylesController {
   @ApiNotFoundResponse({
     description: 'Beer style with the given ID not found.',
   })
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async findOne(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ResponseEntity<BeerStyleEntity>> {
