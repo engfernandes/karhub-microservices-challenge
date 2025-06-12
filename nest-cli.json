@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/api-gateway/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/api-gateway",
+  "projects": {
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
+    "beer-catalog": {
+      "type": "application",
+      "root": "apps/beer-catalog",
+      "entryFile": "main",
+      "sourceRoot": "apps/beer-catalog/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/beer-catalog/tsconfig.app.json"
+      }
+    },
+    "beer-machine": {
+      "type": "application",
+      "root": "apps/beer-machine",
+      "entryFile": "main",
+      "sourceRoot": "apps/beer-machine/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/beer-machine/tsconfig.app.json"
+      }
+    }
+  }
+}
