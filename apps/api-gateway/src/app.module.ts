@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { BeerStylesController } from './modules';
+import { BeerStylesController, BeerMachineController } from './modules';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
 
@@ -33,8 +33,21 @@ import { redisStore } from 'cache-manager-redis-store';
         },
       },
     ]),
+    ClientsModule.register([
+      {
+        name: 'BEER_MACHINE_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: [process.env.RABBITMQ_URL as string],
+          queue: 'beer_machine_queue',
+          queueOptions: {
+            durable: true,
+          },
+        },
+      },
+    ]),
   ],
-  controllers: [BeerStylesController],
+  controllers: [BeerStylesController, BeerMachineController],
   providers: [],
 })
 export class AppModule {}
