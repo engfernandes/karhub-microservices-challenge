@@ -1,17 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BeerStylesService } from './beer-styles.service';
-import { PrismaService } from 'libs/core'; // Ajuste o caminho conforme necessário
+import { PrismaService } from 'libs/core';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import {
   BeerStyleEntity,
   CreateBeerStyleDto,
   UpdateBeerStyleDto,
-} from 'libs/common'; // Ajuste o caminho conforme necessário
+} from 'libs/common';
 import { Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 
-// Mock completo do PrismaService. Cada função que o seu service usa é substituída
-// por uma função mock do Jest (jest.fn()), permitindo-nos controlar o que ela retorna em cada teste.
 const mockPrismaService = {
   beerStyle: {
     create: jest.fn(),
@@ -24,9 +22,6 @@ const mockPrismaService = {
   $transaction: jest.fn(),
 };
 
-// --- DADOS MOCK PARA OS TESTES ---
-
-// O DTO simula os dados brutos que chegam à API, usando tipos primitivos de JavaScript.
 const createBeerStyleDto: CreateBeerStyleDto = {
   name: 'Test IPA',
   description: 'A hoppy test beer',
@@ -34,19 +29,17 @@ const createBeerStyleDto: CreateBeerStyleDto = {
   maxTemperature: 10,
 };
 
-// A entidade simula o que o Prisma retorna do banco de dados, usando os tipos corretos do Prisma (Decimal).
 const singleBeerStyle: BeerStyleEntity = {
   id: 1,
   name: 'Test IPA',
   description: 'A hoppy test beer',
   minTemperature: -7,
   maxTemperature: 10,
-  averageTemperature: 1.5, // Média: (10 + -7) / 2 = 1.5
+  averageTemperature: 1.5,
   createdAt: new Date(),
   updatedAt: new Date(),
 };
 
-// Lista de cervejas para testar buscas e a lógica de recomendação.
 const beerStylesArray: BeerStyleEntity[] = [
   singleBeerStyle,
   new BeerStyleEntity({
@@ -65,26 +58,23 @@ const beerStylesArray: BeerStyleEntity[] = [
     description: 'A dark and strong ale',
     minTemperature: new Decimal(-10),
     maxTemperature: new Decimal(13),
-    averageTemperature: new Decimal(1.5), // Empate com a Test IPA
+    averageTemperature: new Decimal(1.5),
     createdAt: new Date(),
     updatedAt: new Date(),
   }),
 ];
-
-// --- SUÍTE DE TESTES ---
 
 describe('BeerStylesService', () => {
   let service: BeerStylesService;
   let prisma: typeof mockPrismaService;
 
   beforeEach(async () => {
-    // Configura um módulo de teste do NestJS antes de cada teste
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BeerStylesService,
         {
           provide: PrismaService,
-          useValue: mockPrismaService, // Usamos nosso mock em vez do Prisma real
+          useValue: mockPrismaService,
         },
       ],
     }).compile();
@@ -92,7 +82,6 @@ describe('BeerStylesService', () => {
     service = module.get<BeerStylesService>(BeerStylesService);
     prisma = module.get(PrismaService);
 
-    // Limpa o histórico de chamadas dos mocks antes de cada teste para garantir a isolação
     jest.clearAllMocks();
   });
 
@@ -100,7 +89,6 @@ describe('BeerStylesService', () => {
     expect(service).toBeDefined();
   });
 
-  // Testes para o método create
   describe('create', () => {
     it('should create a new beer style and calculate average temperature', async () => {
       prisma.beerStyle.create.mockResolvedValue(singleBeerStyle);
@@ -110,7 +98,7 @@ describe('BeerStylesService', () => {
       expect(prisma.beerStyle.create).toHaveBeenCalledWith({
         data: {
           ...createBeerStyleDto,
-          averageTemperature: 1.5, // O ponto crucial: verifica se a média foi calculada
+          averageTemperature: 1.5,
         },
       });
       expect(result.data).toEqual(singleBeerStyle);
@@ -119,7 +107,7 @@ describe('BeerStylesService', () => {
     it('should throw a ConflictException if beer style name already exists', async () => {
       prisma.beerStyle.create.mockRejectedValue(
         new Prisma.PrismaClientKnownRequestError('Error', {
-          code: 'P2002', // Código de erro do Prisma para violação de chave única
+          code: 'P2002',
           clientVersion: 'test',
         }),
       );
@@ -130,7 +118,6 @@ describe('BeerStylesService', () => {
     });
   });
 
-  // Testes para o método findAll
   describe('findAll', () => {
     it('should return a paginated list of beer styles', async () => {
       prisma.$transaction.mockResolvedValue([
@@ -148,7 +135,6 @@ describe('BeerStylesService', () => {
     });
   });
 
-  // Testes para o método findOne
   describe('findOne', () => {
     it('should return a single beer style by ID', async () => {
       prisma.beerStyle.findUnique.mockResolvedValue(singleBeerStyle);
@@ -167,7 +153,6 @@ describe('BeerStylesService', () => {
     });
   });
 
-  // Testes para o método update
   describe('update', () => {
     it('should update a beer style and recalculate average temperature', async () => {
       const updateDto: UpdateBeerStyleDto = { maxTemperature: 12 };
@@ -186,7 +171,7 @@ describe('BeerStylesService', () => {
         where: { id: 1 },
         data: {
           ...updateDto,
-          averageTemperature: 2.5, // Verifica se a média foi recalculada: (-7 + 12) / 2 = 2.5
+          averageTemperature: 2.5,
         },
       });
       expect(result.data).toEqual(updatedStyle);
@@ -198,7 +183,6 @@ describe('BeerStylesService', () => {
     });
   });
 
-  // Testes para o método remove
   describe('remove', () => {
     it('should remove a beer style successfully', async () => {
       prisma.beerStyle.findUnique.mockResolvedValue(singleBeerStyle);
@@ -219,16 +203,12 @@ describe('BeerStylesService', () => {
     });
   });
 
-  // Testes para a lógica principal: findBestMatchByTemperature
   describe('findBestMatchByTemperature', () => {
     beforeEach(() => {
-      // Para todos os testes neste describe, o findMany retornará nossa lista mock.
-      // A lógica de filtragem e busca acontecerá em memória no nosso service.
       prisma.beerStyle.findMany.mockResolvedValue(beerStylesArray as any);
     });
 
     it('should return the single best style for a given temperature', async () => {
-      // Para a temp 0, Pilsen (média 1.0) é o mais próximo (diferença de 1)
       const temp = 0;
       const result = await service.findBestMatchByTemperature(temp);
 
@@ -237,11 +217,9 @@ describe('BeerStylesService', () => {
     });
 
     it('should return all tied styles for a given temperature', async () => {
-      // Para a temp 2, IPA e Imperial Stout (ambos com média 1.5) são os mais próximos (diferença de 0.5)
       const temp = 2;
       const result = await service.findBestMatchByTemperature(temp);
 
-      // O service deve retornar AMBOS os estilos empatados.
       expect(result).toHaveLength(2);
       const names = result.map((r) => r.name);
       expect(names).toContain('Test IPA');
@@ -249,7 +227,7 @@ describe('BeerStylesService', () => {
     });
 
     it('should return an empty array if no beer styles exist', async () => {
-      prisma.beerStyle.findMany.mockResolvedValue([]); // Sobrescreve o mock do beforeEach
+      prisma.beerStyle.findMany.mockResolvedValue([]);
       const result = await service.findBestMatchByTemperature(5);
       expect(result).toEqual([]);
     });
