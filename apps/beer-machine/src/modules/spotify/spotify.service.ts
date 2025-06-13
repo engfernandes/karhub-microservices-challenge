@@ -19,6 +19,11 @@ export interface SpotifyPlaylist {
   name: string;
   url: string;
   imageUrl?: string;
+  owner?: string;
+  tracks?: {
+    href: string;
+    total: number;
+  };
 }
 
 @Injectable()
@@ -67,7 +72,7 @@ export class SpotifyService {
       const params = new URLSearchParams({
         q: query,
         type: 'playlist',
-        limit: '1',
+        limit: '3',
       });
 
       const response = await firstValueFrom(
@@ -78,17 +83,23 @@ export class SpotifyService {
         }),
       );
 
-      const firstPlaylist = response.data?.playlists?.items?.[0];
+      const playlists = response.data?.playlists?.items || [];
+      const validPlaylist = playlists.find((playlist) => playlist.name.toLowerCase().includes(query.toLowerCase()));
 
-      if (!firstPlaylist) {
+      if (!validPlaylist) {
         this.logger.warn(`No Spotify playlist found for query: "${query}"`);
         return null;
       }
 
       const playlistData: SpotifyPlaylist = {
-        name: firstPlaylist.name,
-        url: firstPlaylist.external_urls?.spotify,
-        imageUrl: firstPlaylist.images?.[0]?.url,
+        name: validPlaylist.name,
+        owner: validPlaylist.owner?.display_name,
+        url: validPlaylist.external_urls?.spotify,
+        imageUrl: validPlaylist.images?.[0]?.url,
+        tracks: {
+          href: validPlaylist.tracks?.href,
+          total: validPlaylist.tracks?.total,
+        },
       };
 
       await this.cacheManager.set(cacheKey, playlistData, 60 * 5); // Cache for 5 minutes
