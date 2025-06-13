@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'libs/core';
-import { Prisma } from '@prisma/client';
+import { BeerStyle, Prisma } from '@prisma/client';
 import {
   ResponseEntity,
   FilterConfig,
@@ -93,13 +93,7 @@ export class BeerStylesService {
    * @throws {NotFoundException} If the style with the provided ID is not found.
    */
   async findOne(id: number): Promise<ResponseEntity<BeerStyleEntity>> {
-    const beerStyle = await this.prisma.beerStyle.findUnique({
-      where: { id },
-    });
-
-    if (!beerStyle) {
-      throw new NotFoundException(`BeerStyle with ID #${id} not found`);
-    }
+    const beerStyle = await this.findStyleById(id);
 
     return new ResponseEntity<BeerStyleEntity>(new BeerStyleEntity(beerStyle));
   }
@@ -115,7 +109,7 @@ export class BeerStylesService {
     id: number,
     updateBeerStyleDto: UpdateBeerStyleDto,
   ): Promise<ResponseEntity<BeerStyleEntity>> {
-    const beerStyle = await this.findOne(id);
+    const beerStyle = await this.findStyleById(id);
 
     if (!beerStyle) {
       throw new NotFoundException(`BeerStyle with ID #${id} not found`);
@@ -138,12 +132,24 @@ export class BeerStylesService {
    * @throws {NotFoundException} If the style with the provided ID is not found.
    */
   async remove(id: number): Promise<ResponseEntity<void>> {
-    await this.findOne(id);
+    await this.findStyleById(id);
 
     await this.prisma.beerStyle.delete({
       where: { id },
     });
 
     return new ResponseEntity<void>(undefined);
+  }
+
+  private async findStyleById(id: number): Promise<BeerStyle> {
+    const beerStyle = await this.prisma.beerStyle.findUnique({
+      where: { id },
+    });
+
+    if (!beerStyle) {
+      throw new NotFoundException(`BeerStyle with ID #${id} not found`);
+    }
+
+    return beerStyle;
   }
 }
