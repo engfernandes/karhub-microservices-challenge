@@ -46,12 +46,21 @@ export class BeerMachineService {
       `Best style found: ${bestStyle.name}. Searching for playlist...`,
     );
 
-    const playlist = await this.spotifyService.searchPlaylist(bestStyle.name);
+    let playlist: SpotifyPlaylist | null = null;
+    try {
+      playlist = await this.spotifyService.searchPlaylist(bestStyle.name);
+    } catch (error) {
+      this.logger.error(
+        `Failed to fetch playlist for style "${bestStyle.name}". Proceeding without a playlist.`,
+        error.stack,
+      );
+    }
 
     const beerPairingEntity = {
       beerStyle: bestStyle.name,
-      playlist: playlist || null,
+      playlist: playlist,
     };
+
     return new ResponseEntity(
       new BeerPairingEntity(beerPairingEntity),
       undefined,
