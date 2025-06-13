@@ -84,6 +84,11 @@ export class SpotifyService {
       );
 
       const playlists = response.data?.playlists?.items || [];
+      if (playlists.length === 0) {
+        this.logger.warn(`No Spotify playlists found for query: "${query}"`);
+        return null;
+      }
+
       const validPlaylist = playlists.find((playlist) => playlist.name.toLowerCase().includes(query.toLowerCase()));
 
       if (!validPlaylist) {

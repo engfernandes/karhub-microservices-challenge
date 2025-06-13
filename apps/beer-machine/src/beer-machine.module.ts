@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { BeerMachineController } from './beer-machine.controller';
 import { BeerMachineService } from './beer-machine.service';
-import { SpotifyModule, SpotifyService } from './modules';
+import { SpotifyModule } from './modules';
 import { HttpModule } from '@nestjs/axios';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -17,7 +17,7 @@ import { redisStore } from 'cache-manager-redis-store';
     ClientsModule.registerAsync([
       {
         name: 'BEER_CATALOG_SERVICE',
-        inject: [ConfigService],
+        imports: [ConfigModule],
         useFactory: (configService: ConfigService) => ({
           transport: Transport.RMQ,
           options: {
@@ -26,20 +26,25 @@ import { redisStore } from 'cache-manager-redis-store';
             queueOptions: { durable: true },
           },
         }),
+        inject: [ConfigService],
       },
     ]),
     CacheModule.registerAsync({
       isGlobal: true,
-      useFactory: async () => ({
+      useFactory: async (configService: ConfigService) => ({
         store: await redisStore({
-          url: process.env.REDIS_URL || 'redis://localhost:6379',
+          url:
+            configService.getOrThrow<string>('REDIS_URL') ||
+            'redis://localhost:6379',
           ttl: 10,
         }),
       }),
+      imports: [ConfigModule],
+      inject: [ConfigService],
     }),
     SpotifyModule,
   ],
   controllers: [BeerMachineController],
-  providers: [BeerMachineService, SpotifyService],
+  providers: [BeerMachineService],
 })
 export class BeerMachineModule {}
