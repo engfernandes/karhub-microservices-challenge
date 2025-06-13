@@ -60,5 +60,8 @@ export class BeerStyleEntity {
 
     this.minTemperature = convertDecimal(beerStyleFromPrisma.minTemperature);
     this.maxTemperature = convertDecimal(beerStyleFromPrisma.maxTemperature);
+    this.averageTemperature = convertDecimal(
+      beerStyleFromPrisma.averageTemperature,
+    );
   }
 }

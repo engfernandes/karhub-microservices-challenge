@@ -29,7 +29,7 @@ export class BeerStylesService {
   constructor(private prisma: PrismaService) {}
 
   /**
-   * Creates a new beer style in the database.
+   * Creates a new beer style, automatically calculating its average temperature.
    * @param createBeerStyleDto The data to create the new style.
    * @returns The newly created beer style entity.
    */
@@ -37,8 +37,16 @@ export class BeerStylesService {
     createBeerStyleDto: CreateBeerStyleDto,
   ): Promise<ResponseEntity<BeerStyleEntity>> {
     try {
+      const averageTemperature =
+        (createBeerStyleDto.minTemperature +
+          createBeerStyleDto.maxTemperature) /
+        2;
+
       const newBeerStyle = await this.prisma.beerStyle.create({
-        data: createBeerStyleDto,
+        data: {
+          ...createBeerStyleDto,
+          averageTemperature,
+        },
       });
 
       return new ResponseEntity(new BeerStyleEntity(newBeerStyle));
@@ -111,13 +119,19 @@ export class BeerStylesService {
   ): Promise<ResponseEntity<BeerStyleEntity>> {
     const beerStyle = await this.findStyleById(id);
 
-    if (!beerStyle) {
-      throw new NotFoundException(`BeerStyle with ID #${id} not found`);
-    }
+    const minTemperature =
+      updateBeerStyleDto.minTemperature ?? beerStyle.minTemperature;
+    const maxTemperature =
+      updateBeerStyleDto.maxTemperature ?? beerStyle.maxTemperature;
+    const averageTemperature =
+      (Number(minTemperature) + Number(maxTemperature)) / 2;
 
     const updatedBeerStyle = await this.prisma.beerStyle.update({
       where: { id },
-      data: updateBeerStyleDto,
+      data: {
+        ...updateBeerStyleDto,
+        averageTemperature,
+      },
     });
 
     return new ResponseEntity<BeerStyleEntity>(
@@ -151,5 +165,36 @@ export class BeerStylesService {
     }
 
     return beerStyle;
+  }
+
+  async findBestMatchByTemperature(temp: number): Promise<BeerStyleEntity[]> {
+    const allStyles = await this.prisma.beerStyle.findMany({
+      select: { averageTemperature: true },
+    });
+
+    if (allStyles.length === 0) {
+      return [];
+    }
+
+    const minDifference = allStyles.reduce((min, style) => {
+      const difference = Math.abs(temp - Number(style.averageTemperature));
+      return difference < min ? difference : min;
+    }, Infinity);
+
+    const bestMatches = await this.prisma.beerStyle.findMany({
+      where: {
+        averageTemperature: {
+          gte: temp - minDifference,
+          lte: temp + minDifference,
+        },
+      },
+    });
+
+    const finalMatches = bestMatches.filter(
+      (style) =>
+        Math.abs(temp - Number(style.averageTemperature)) === minDifference,
+    );
+
+    return finalMatches.map((style) => new BeerStyleEntity(style));
   }
 }

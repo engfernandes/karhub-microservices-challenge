@@ -17,8 +17,7 @@ export class CreateBeerStyleDto {
     required: false,
   })
   @IsNumber({ maxDecimalPlaces: 1 })
-  @IsOptional()
-  minTemperature?: number;
+  minTemperature: number;
 
   @ApiProperty({
     description:
@@ -27,18 +26,7 @@ export class CreateBeerStyleDto {
     required: false,
   })
   @IsNumber({ maxDecimalPlaces: 1 })
-  @IsOptional()
-  maxTemperature?: number;
-
-  @ApiProperty({
-    description:
-      'The average temperature for the beer style, in degrees Celsius.',
-    example: 3.0,
-    required: false,
-  })
-  @IsNumber({ maxDecimalPlaces: 1 })
-  @IsOptional()
-  averageTemperature?: number;
+  maxTemperature: number;
 
   @ApiProperty({
     description: 'A brief description of the beer style.',

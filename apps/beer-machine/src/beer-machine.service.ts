@@ -16,23 +16,27 @@ export class BeerMachineService {
   async getBeerPairing(
     temperature: number,
   ): Promise<{ beerStyle: string; playlist: SpotifyPlaylist | null }> {
-    this.logger.log('Fetching all beer styles from beer-catalog...');
-    const stylesResponse$ = this.beerCatalogClient.send<
+    this.logger.log(
+      `Requesting best beer style for ${temperature}°C from beer-catalog...`,
+    );
+
+    const response$ = this.beerCatalogClient.send<
       ResponseEntity<BeerStyleEntity[]>
-    >({ cmd: 'find_all_beer_styles' }, { limit: 1000 });
-    const stylesResponse = await firstValueFrom(stylesResponse$);
-    const beerStyles = stylesResponse.data;
+    >({ cmd: 'find_best_style_by_temp' }, { temperature });
+    const response = await firstValueFrom(response$);
+    let bestFitStyles = response.data;
 
-    if (!beerStyles || beerStyles.length === 0) {
-      throw new NotFoundException('No beer styles found in the database.');
-    }
-
-    const bestStyle = this.findBestBeerStyle(beerStyles, temperature);
-    if (!bestStyle) {
+    if (!bestFitStyles || bestFitStyles.length === 0) {
       throw new NotFoundException(
         `No suitable beer style found for temperature ${temperature}°C.`,
       );
     }
+
+    if (bestFitStyles.length > 1) {
+      bestFitStyles.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    const bestStyle = bestFitStyles[0];
 
     this.logger.log(
       `Best style found: ${bestStyle.name}. Searching for playlist...`,
@@ -44,39 +48,5 @@ export class BeerMachineService {
       beerStyle: bestStyle.name,
       playlist,
     };
-  }
-
-  private findBestBeerStyle(
-    styles: BeerStyleEntity[],
-    temp: number,
-  ): BeerStyleEntity | null {
-    let bestFitStyles: BeerStyleEntity[] = [];
-    let minDifference = Infinity;
-
-    styles.forEach((style) => {
-      if (style.minTemperature === null || style.maxTemperature === null) {
-        return;
-      }
-
-      const averageTemp = (style.minTemperature + style.maxTemperature) / 2;
-      const difference = Math.abs(temp - averageTemp);
-
-      if (difference < minDifference) {
-        minDifference = difference;
-        bestFitStyles = [style];
-      } else if (difference === minDifference) {
-        bestFitStyles.push(style);
-      }
-    });
-
-    if (bestFitStyles.length === 0) {
-      return null;
-    }
-
-    if (bestFitStyles.length > 1) {
-      bestFitStyles.sort((a, b) => a.name.localeCompare(b.name));
-    }
-
-    return bestFitStyles[0];
   }
 }

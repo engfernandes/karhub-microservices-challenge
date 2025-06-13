@@ -2,8 +2,10 @@ import { Controller, HttpException } from '@nestjs/common';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { BeerStylesService } from './beer-styles.service';
 import {
+  BeerStyleEntity,
   CreateBeerStyleDto,
   QueryBeerStyleDto,
+  ResponseEntity,
   UpdateBeerStyleDto,
 } from 'libs/common';
 
@@ -64,5 +66,14 @@ export class BeerStylesController {
       }
       throw error;
     }
+  }
+
+  @MessagePattern({ cmd: 'find_best_style_by_temp' })
+  async findBestByTemp(
+    @Payload('temperature') temperature: number,
+  ): Promise<ResponseEntity<BeerStyleEntity[]>> {
+    const bestMatches =
+      await this.beerStylesService.findBestMatchByTemperature(temperature);
+    return new ResponseEntity(bestMatches);
   }
 }
