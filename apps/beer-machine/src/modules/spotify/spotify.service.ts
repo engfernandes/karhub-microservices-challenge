@@ -19,6 +19,11 @@ export interface SpotifyPlaylist {
   name: string;
   url: string;
   imageUrl?: string;
+  owner?: string;
+  tracks?: {
+    href: string;
+    total: number;
+  };
 }
 
 @Injectable()
@@ -87,8 +92,13 @@ export class SpotifyService {
 
       const playlistData: SpotifyPlaylist = {
         name: firstPlaylist.name,
+        owner: firstPlaylist.owner?.display_name,
         url: firstPlaylist.external_urls?.spotify,
         imageUrl: firstPlaylist.images?.[0]?.url,
+        tracks: {
+          href: firstPlaylist.tracks?.href,
+          total: firstPlaylist.tracks?.total,
+        },
       };
 
       await this.cacheManager.set(cacheKey, playlistData, 60 * 5); // Cache for 5 minutes
