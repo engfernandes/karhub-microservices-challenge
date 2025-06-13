@@ -55,8 +55,6 @@ export class SpotifyService {
    * @returns The first playlist found or null if none is found.
    */
   async searchPlaylist(query: string): Promise<SpotifyPlaylist | null> {
-    const token = await this.getValidToken();
-
     const cacheKey = `spotify:playlist:${query}`;
 
     try {
@@ -67,6 +65,8 @@ export class SpotifyService {
         this.logger.log(`Found cached playlist for query: "${query}"`);
         return cachedPlaylist;
       }
+
+      const token = await this.getValidToken();
 
       const searchUrl = 'https://api.spotify.com/v1/search';
       const params = new URLSearchParams({

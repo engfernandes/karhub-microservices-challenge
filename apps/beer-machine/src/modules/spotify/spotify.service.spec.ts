@@ -2,150 +2,189 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SpotifyService, SpotifyPlaylist } from './spotify.service';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { InternalServerErrorException } from '@nestjs/common';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { of } from 'rxjs';
+import { InternalServerErrorException } from '@nestjs/common';
+import { AxiosResponse } from 'axios';
+
+const mockConfigService = {
+  get: jest.fn((key: string) => {
+    if (key === 'SPOTIFY_CLIENT_ID') return 'test_client_id';
+    if (key === 'SPOTIFY_CLIENT_SECRET') return 'test_client_secret';
+    return null;
+  }),
+};
+
+const mockHttpService = {
+  get: jest.fn(),
+  post: jest.fn(),
+};
+
+const mockCacheManager = {
+  get: jest.fn(),
+  set: jest.fn(),
+};
+
+const mockSpotifyTokenResponse: AxiosResponse = {
+  data: { access_token: 'mock_token', expires_in: 3600 },
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config: {} as any,
+};
+
+const mockSpotifyPlaylistResponse: AxiosResponse = {
+  data: {
+    playlists: {
+      items: [
+        {
+          name: 'Awesome IPA Playlist',
+          external_urls: { spotify: 'https://spotify.com/playlist/ipa' },
+          images: [{ url: 'https://image.url/ipa' }],
+          owner: { display_name: 'DJ Beer' },
+          tracks: { href: 'https://spotify.com/tracks/ipa', total: 50 },
+        },
+      ],
+    },
+  },
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config: {} as any,
+};
 
 describe('SpotifyService', () => {
   let service: SpotifyService;
-  let configService: ConfigService;
   let httpService: HttpService;
-  let cacheManager: any;
+  let cacheManager: Cache;
 
   beforeEach(async () => {
-    configService = {
-      get: jest.fn((key: string) => {
-        if (key === 'SPOTIFY_CLIENT_ID') return 'test-client-id';
-        if (key === 'SPOTIFY_CLIENT_SECRET') return 'test-client-secret';
-        return null;
-      }),
-    } as any;
-    httpService = { get: jest.fn(), post: jest.fn() } as any;
-    cacheManager = { get: jest.fn(), set: jest.fn() };
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SpotifyService,
-        { provide: ConfigService, useValue: configService },
-        { provide: HttpService, useValue: httpService },
-        { provide: CACHE_MANAGER, useValue: cacheManager },
+        { provide: ConfigService, useValue: mockConfigService },
+        { provide: HttpService, useValue: mockHttpService },
+        { provide: CACHE_MANAGER, useValue: mockCacheManager },
       ],
     }).compile();
 
     service = module.get<SpotifyService>(SpotifyService);
+    httpService = module.get<HttpService>(HttpService);
+    cacheManager = module.get<Cache>(CACHE_MANAGER);
+
+    jest.clearAllMocks();
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
   });
 
   describe('searchPlaylist', () => {
-    it('should return cached playlist if available', async () => {
-      const playlist: SpotifyPlaylist = {
-        name: 'Test Playlist',
-        url: 'http://spotify.com/playlist',
-        imageUrl: 'http://image.com/img.jpg',
+    it('should return a cached playlist if available', async () => {
+      const query = 'IPA';
+      const cachedPlaylist: SpotifyPlaylist = {
+        name: 'Cached IPA Playlist',
+        url: '...',
       };
-      jest.spyOn(service as any, 'getValidToken').mockResolvedValue('token');
-      cacheManager.get = jest.fn().mockResolvedValue(playlist);
-      const result = await service.searchPlaylist('rock');
-      expect(result).toEqual(playlist);
+      mockCacheManager.get.mockResolvedValue(cachedPlaylist);
+
+      const result = await service.searchPlaylist(query);
+
+      expect(result).toEqual(cachedPlaylist);
+      expect(httpService.get).not.toHaveBeenCalled();
     });
 
-    it('should fetch playlist from Spotify API if not cached', async () => {
-      cacheManager.get = jest.fn().mockResolvedValue(null);
-      jest.spyOn(service as any, 'getValidToken').mockResolvedValue('token');
-      const playlistData = {
-        data: {
-          playlists: {
-            items: [
-              {
-                name: 'Test Playlist',
-                external_urls: { spotify: 'http://spotify.com/playlist' },
-                images: [{ url: 'http://image.com/img.jpg' }],
-              },
-            ],
-          },
-        },
-      };
-      httpService.get = jest.fn().mockReturnValue(of(playlistData));
-      cacheManager.set = jest.fn();
-      const result = await service.searchPlaylist('rock');
-      expect(result).toEqual({
-        name: 'Test Playlist',
-        url: 'http://spotify.com/playlist',
-        imageUrl: 'http://image.com/img.jpg',
-      });
-      expect(cacheManager.set).toHaveBeenCalled();
+    it('should fetch from Spotify API if not cached, then cache and return the result', async () => {
+      const query = 'IPA';
+      mockCacheManager.get.mockResolvedValue(null);
+      jest
+        .spyOn(service as any, 'getValidToken')
+        .mockResolvedValue('mock_token');
+      mockHttpService.get.mockReturnValue(of(mockSpotifyPlaylistResponse));
+
+      const result = await service.searchPlaylist(query);
+
+      expect(result).not.toBeNull();
+      expect(result?.name).toBe('Awesome IPA Playlist');
+      expect(httpService.get).toHaveBeenCalledWith(
+        expect.stringContaining('https://api.spotify.com/v1/search'),
+        expect.any(Object),
+      );
+      expect(cacheManager.set).toHaveBeenCalledWith(
+        `spotify:playlist:${query}`,
+        expect.any(Object),
+        expect.any(Number),
+      );
     });
 
-    it('should return null if no playlist found', async () => {
-      cacheManager.get = jest.fn().mockResolvedValue(null);
-      jest.spyOn(service as any, 'getValidToken').mockResolvedValue('token');
-      const playlistData = { data: { playlists: { items: [] } } };
-      httpService.get = jest.fn().mockReturnValue(of(playlistData));
-      const result = await service.searchPlaylist('unknown');
+    it('should return null if Spotify API finds no playlists', async () => {
+      const query = 'NonExistentStyle';
+      mockCacheManager.get.mockResolvedValue(null);
+      jest
+        .spyOn(service as any, 'getValidToken')
+        .mockResolvedValue('mock_token');
+      mockHttpService.get.mockReturnValue(
+        of({ data: { playlists: { items: [] } } } as any),
+      );
+
+      const result = await service.searchPlaylist(query);
+
       expect(result).toBeNull();
+      expect(cacheManager.set).not.toHaveBeenCalled();
     });
 
-    it('should throw InternalServerErrorException on error', async () => {
-      cacheManager.get = jest.fn().mockResolvedValue(null);
-      jest.spyOn(service as any, 'getValidToken').mockResolvedValue('token');
-      httpService.get = jest.fn().mockImplementation(() => {
-        throw new Error('fail');
+    it('should throw InternalServerErrorException on API failure', async () => {
+      const query = 'IPA';
+      mockCacheManager.get.mockResolvedValue(null);
+      jest
+        .spyOn(service as any, 'getValidToken')
+        .mockResolvedValue('mock_token');
+      mockHttpService.get.mockImplementation(() => {
+        throw new Error('API Error');
       });
-      await expect(service.searchPlaylist('fail')).rejects.toThrow(
+
+      await expect(service.searchPlaylist(query)).rejects.toThrow(
         InternalServerErrorException,
       );
     });
   });
 
-  describe('getValidToken', () => {
-    it('should return cached token if valid', async () => {
-      cacheManager.get = jest.fn().mockImplementation((key: string) => {
-        if (key === 'spotify:access_token') return 'token';
-        if (key === 'spotify:token_expiration') return Date.now() + 10000;
-      });
-      const result = await (service as any).getValidToken();
-      expect(result).toBe('token');
+  describe('Token Management (getValidToken and fetchNewToken)', () => {
+    it('should return a cached token if it is valid', async () => {
+      mockCacheManager.get
+        .mockResolvedValueOnce('cached_token')
+        .mockResolvedValueOnce(Date.now() + 10000);
+
+      const token = await (service as any).getValidToken();
+
+      expect(token).toBe('cached_token');
+      expect(httpService.post).not.toHaveBeenCalled();
     });
 
-    it('should fetch new token if not cached or expired', async () => {
-      cacheManager.get = jest
-        .fn()
-        .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce(null);
-      const fetchNewTokenSpy = jest
-        .spyOn(service as any, 'fetchNewToken')
-        .mockResolvedValue('new-token');
-      const result = await (service as any).getValidToken();
-      expect(fetchNewTokenSpy).toHaveBeenCalled();
-      expect(result).toBe('new-token');
-    });
-  });
+    it('should fetch a new token if cache is expired', async () => {
+      mockCacheManager.get
+        .mockResolvedValueOnce('expired_token')
+        .mockResolvedValueOnce(Date.now() - 10000);
+      mockHttpService.post.mockReturnValue(of(mockSpotifyTokenResponse));
 
-  describe('fetchNewToken', () => {
-    it('should fetch and cache new token', async () => {
-      const response = {
-        data: { access_token: 'token', expires_in: 3600 },
-      };
-      httpService.post = jest.fn().mockReturnValue(of(response));
-      cacheManager.set = jest.fn();
-      const result = await (service as any).fetchNewToken();
-      expect(result).toBe('token');
-      expect(cacheManager.set).toHaveBeenCalledWith(
-        'spotify:access_token',
-        'token',
-        3600 - 300,
+      const token = await (service as any).getValidToken();
+
+      expect(httpService.post).toHaveBeenCalledWith(
+        'https://accounts.spotify.com/api/token',
+        expect.any(String),
+        expect.any(Object),
       );
-      expect(cacheManager.set).toHaveBeenCalledWith(
-        'spotify:token_expiration',
-        expect.any(Number),
-        3600 - 300,
-      );
+      expect(token).toBe('mock_token');
+      expect(cacheManager.set).toHaveBeenCalledTimes(2);
     });
 
-    it('should throw InternalServerErrorException on error', async () => {
-      httpService.post = jest.fn().mockImplementation(() => {
-        throw new Error('fail');
+    it('should throw InternalServerErrorException if fetching a new token fails', async () => {
+      mockCacheManager.get.mockResolvedValue(null);
+      mockHttpService.post.mockImplementation(() => {
+        throw new Error('Auth Error');
       });
-      await expect((service as any).fetchNewToken()).rejects.toThrow(
+
+      await expect((service as any).getValidToken()).rejects.toThrow(
         InternalServerErrorException,
       );
     });
