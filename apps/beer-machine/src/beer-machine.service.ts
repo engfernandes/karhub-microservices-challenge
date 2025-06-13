@@ -1,7 +1,11 @@
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { BeerStyleEntity, ResponseEntity } from 'libs/common';
+import {
+  BeerPairingEntity,
+  BeerStyleEntity,
+  ResponseEntity,
+} from 'libs/common';
 import { SpotifyService, SpotifyPlaylist } from './modules/spotify';
 
 @Injectable()
@@ -15,7 +19,7 @@ export class BeerMachineService {
 
   async getBeerPairing(
     temperature: number,
-  ): Promise<{ beerStyle: string; playlist: SpotifyPlaylist | null }> {
+  ): Promise<ResponseEntity<BeerPairingEntity>> {
     this.logger.log(
       `Requesting best beer style for ${temperature}°C from beer-catalog...`,
     );
@@ -44,9 +48,13 @@ export class BeerMachineService {
 
     const playlist = await this.spotifyService.searchPlaylist(bestStyle.name);
 
-    return {
+    const beerPairingEntity = {
       beerStyle: bestStyle.name,
-      playlist,
+      playlist: playlist || null,
     };
+    return new ResponseEntity(
+      new BeerPairingEntity(beerPairingEntity),
+      undefined,
+    );
   }
 }
