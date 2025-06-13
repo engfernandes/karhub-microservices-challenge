@@ -44,14 +44,15 @@ model City {
 }
 
 model BeerStyle {
-  id             Int      @id @default(autoincrement())
-  name           String   @unique
-  minTemperature Decimal? @db.Decimal(3, 1)
-  maxTemperature Decimal? @db.Decimal(3, 1)
-  description    String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  beers          Beer[]
+  id                 Int      @id @default(autoincrement())
+  name               String   @unique
+  minTemperature     Decimal? @db.Decimal(3, 1)
+  maxTemperature     Decimal? @db.Decimal(3, 1)
+  averageTemperature Decimal? @db.Decimal(3, 1)
+  description        String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  beers              Beer[]
 
   @@map("beer_styles")
 }

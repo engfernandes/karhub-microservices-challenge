@@ -89,7 +89,9 @@ export class SpotifyService {
         return null;
       }
 
-      const validPlaylist = playlists.find((playlist) => playlist.name.toLowerCase().includes(query.toLowerCase()));
+      const validPlaylist = playlists?.find((playlist) =>
+        playlist?.name.toLowerCase().includes(query.toLowerCase()),
+      );
 
       if (!validPlaylist) {
         this.logger.warn(`No Spotify playlist found for query: "${query}"`);

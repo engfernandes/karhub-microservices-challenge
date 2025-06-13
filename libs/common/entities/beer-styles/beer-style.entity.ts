@@ -2,14 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { BeerStyle } from '@prisma/client';
 
 export class BeerStyleEntity {
-  @ApiProperty({ description: 'O ID único do estilo de cerveja' })
+  @ApiProperty({ description: 'The unique ID of the beer style' })
   id: number;
 
-  @ApiProperty({ description: 'O nome do estilo da cerveja' })
+  @ApiProperty({ description: 'The name of the beer style' })
   name: string;
 
   @ApiProperty({
-    description: 'A temperatura mínima ideal para consumo',
+    description: 'The minimum ideal temperature for consumption',
     type: 'number',
     format: 'decimal',
     required: false,
@@ -18,7 +18,7 @@ export class BeerStyleEntity {
   minTemperature: number | null;
 
   @ApiProperty({
-    description: 'A temperatura máxima ideal para consumo',
+    description: 'The maximum ideal temperature for consumption',
     type: 'number',
     format: 'decimal',
     required: false,
@@ -27,16 +27,25 @@ export class BeerStyleEntity {
   maxTemperature: number | null;
 
   @ApiProperty({
-    description: 'Uma breve descrição sobre o estilo',
+    description: 'The average temperature for the beer style',
+    type: 'number',
+    format: 'decimal',
+    required: false,
+    nullable: true,
+  })
+  averageTemperature: number | null;
+
+  @ApiProperty({
+    description: 'A brief description about the style',
     required: false,
     nullable: true,
   })
   description: string | null;
 
-  @ApiProperty({ description: 'A data em que o registro foi criado' })
+  @ApiProperty({ description: 'The date the record was created' })
   createdAt: Date;
 
-  @ApiProperty({ description: 'A data da última atualização do registro' })
+  @ApiProperty({ description: 'The date of the last update of the record' })
   updatedAt: Date;
 
   constructor(beerStyleFromPrisma: BeerStyle) {
