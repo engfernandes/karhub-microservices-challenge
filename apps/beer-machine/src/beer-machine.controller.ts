@@ -7,9 +7,9 @@ export class BeerMachineController {
   constructor(private readonly beerMachineService: BeerMachineService) {}
 
   @MessagePattern({ cmd: 'get_beer_pairing' })
-  getBeerPairing(@Payload() data: { temperature: number }) {
+  async getBeerPairing(@Payload() data: { temperature: number }) {
     try {
-      return this.beerMachineService.getBeerPairing(data.temperature);
+      return await this.beerMachineService.getBeerPairing(data.temperature);
     } catch (error) {
       if (error instanceof HttpException) {
         throw new RpcException(error.getResponse());
