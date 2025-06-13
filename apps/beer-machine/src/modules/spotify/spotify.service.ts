@@ -72,7 +72,7 @@ export class SpotifyService {
       const params = new URLSearchParams({
         q: query,
         type: 'playlist',
-        limit: '1',
+        limit: '3',
       });
 
       const response = await firstValueFrom(
@@ -83,9 +83,11 @@ export class SpotifyService {
         }),
       );
 
-      const firstPlaylist = response.data?.playlists?.items?.[0];
+      const playlists = response.data?.playlists?.items;
+      const validPlaylist = playlists?.filter((playlist) => playlist?.name?.toLowerCase().includes(query.toLowerCase()));
+      const firstPlaylist = validPlaylist?.[0];
 
-      if (!firstPlaylist) {
+      if (!validPlaylist.length) {
         this.logger.warn(`No Spotify playlist found for query: "${query}"`);
         return null;
       }
