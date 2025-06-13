@@ -7,42 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Country {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  states    State[]
-
-  @@map("countries")
-}
-
-model State {
-  id        Int      @id @default(autoincrement())
-  name      String
-  countryId Int
-  country   Country  @relation(fields: [countryId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  cities    City[]
-
-  @@unique([countryId, name])
-  @@map("states")
-}
-
-model City {
-  id        Int       @id @default(autoincrement())
-  name      String
-  stateId   Int
-  state     State     @relation(fields: [stateId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  breweries Brewery[]
-
-  @@unique([stateId, name])
-  @@map("cities")
-}
-
 model BeerStyle {
   id                 Int      @id @default(autoincrement())
   name               String   @unique
@@ -60,8 +24,6 @@ model BeerStyle {
 model Brewery {
   id        Int      @id @default(autoincrement())
   name      String   @unique
-  cityId    Int
-  city      City     @relation(fields: [cityId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   beers     Beer[]

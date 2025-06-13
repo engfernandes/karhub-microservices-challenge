@@ -1,0 +1,170 @@
+[
+  {
+    "name": "Original",
+    "brewery": "Cervejaria Brahma (Ambev)",
+    "beerStyle": "American Lager",
+    "abv": 4.9
+  },
+  {
+    "name": "Heineken",
+    "brewery": "Heineken",
+    "beerStyle": "American Lager",
+    "abv": 5
+  },
+  {
+    "name": "Budweiser",
+    "brewery": "Anheuser-Busch (Ambev)",
+    "beerStyle": "American Lager",
+    "abv": 5
+  },
+  {
+    "name": "Leffe Blonde",
+    "brewery": "Abbaye de Leffe (AB InBev)",
+    "beerStyle": "Belgian Blond Ale",
+    "abv": 6.6
+  },
+  {
+    "name": "Duvel",
+    "brewery": "Duvel Moortgat",
+    "beerStyle": "Belgian Golden Strong Ale",
+    "abv": 8.5
+  },
+  {
+    "name": "Eisenbahn Weizenbock",
+    "brewery": "Eisenbahn (Heineken)",
+    "beerStyle": "Bock (Weizenbock)",
+    "abv": 8
+  },
+  {
+    "name": "Paulaner Salvator",
+    "brewery": "Paulaner Brauerei",
+    "beerStyle": "Doppelbock",
+    "abv": 7.9
+  },
+  {
+    "name": "Goose IPA",
+    "brewery": "Goose Island (AB InBev)",
+    "beerStyle": "India Pale Ale (IPA)",
+    "abv": 5.9
+  },
+  {
+    "name": "Lagunitas IPA",
+    "brewery": "Lagunitas Brewing (Heineken)",
+    "beerStyle": "India Pale Ale (IPA)",
+    "abv": 6.2
+  },
+  {
+    "name": "Brewdog Punk IPA",
+    "brewery": "BrewDog",
+    "beerStyle": "India Pale Ale (IPA)",
+    "abv": 5.4
+  },
+  {
+    "name": "Pilsner Urquell",
+    "brewery": "Plzeňský Prazdroj",
+    "beerStyle": "Pilsen",
+    "abv": 4.4
+  },
+  {
+    "name": "Stella Artois",
+    "brewery": "Stella Artois (AB InBev)",
+    "beerStyle": "Pilsen",
+    "abv": 5
+  },
+  {
+    "name": "Eisenbahn Pilsen",
+    "brewery": "Eisenbahn (Heineken)",
+    "beerStyle": "Pilsen",
+    "abv": 4.8
+  },
+  {
+    "name": "Fuller's London Porter",
+    "brewery": "Fuller's Brewery (Asahi)",
+    "beerStyle": "Porter",
+    "abv": 5.4
+  },
+  {
+    "name": "Baden Baden 5 Grãos",
+    "brewery": "Baden Baden (Heineken)",
+    "beerStyle": "Porter",
+    "abv": 6.4
+  },
+  {
+    "name": "Chimay Blue (Grande Réserve)",
+    "brewery": "Bières de Chimay",
+    "beerStyle": "Quadrupel",
+    "abv": 9
+  },
+  {
+    "name": "Rochefort 10",
+    "brewery": "Abbaye Notre-Dame de Saint-Rémy",
+    "beerStyle": "Quadrupel",
+    "abv": 11.3
+  },
+  {
+    "name": "Wäls Quadruppel",
+    "brewery": "Wäls (Ambev)",
+    "beerStyle": "Quadrupel",
+    "abv": 9
+  },
+  {
+    "name": "Aecht Schlenkerla Rauchbier",
+    "brewery": "Brauerei Heller-Trum",
+    "beerStyle": "Rauchbier",
+    "abv": 5.1
+  },
+  {
+    "name": "DuPont Saison Vieille Provision",
+    "brewery": "Brasserie Dupont",
+    "beerStyle": "Saison",
+    "abv": 6.5
+  },
+  {
+    "name": "Catharina Sour (várias)",
+    "brewery": "Várias Cervejarias",
+    "beerStyle": "Sour (Catharina Sour)",
+    "abv": 4.5
+  },
+  {
+    "name": "Timmermans Oude Gueuze",
+    "brewery": "Brouwerij Timmermans",
+    "beerStyle": "Sour (Gueuze Lambic)",
+    "abv": 5.5
+  },
+  {
+    "name": "Guinness Draught",
+    "brewery": "St. James's Gate (Diageo)",
+    "beerStyle": "Stout",
+    "abv": 4.2
+  },
+  {
+    "name": "Petroleum",
+    "brewery": "Dama Bier",
+    "beerStyle": "Stout (Imperial Stout)",
+    "abv": 9.5
+  },
+  {
+    "name": "La Trappe Tripel",
+    "brewery": "Bierbrouwerij De Koningshoeven",
+    "beerStyle": "Tripel",
+    "abv": 8
+  },
+  {
+    "name": "Paulaner Hefe-Weißbier",
+    "brewery": "Paulaner Brauerei",
+    "beerStyle": "Weissbier",
+    "abv": 5.5
+  },
+  {
+    "name": "Weihenstephaner Hefeweißbier",
+    "brewery": "Bayerische Staatsbrauerei",
+    "beerStyle": "Weissbier",
+    "abv": 5.4
+  },
+  {
+    "name": "Hoegaarden Wit-Blanche",
+    "brewery": "Brouwerij Hoegaarden (AB InBev)",
+    "beerStyle": "Witbier",
+    "abv": 4.9
+  }
+]
