@@ -1,5 +1,5 @@
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Controller, HttpException } from '@nestjs/common';
+import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { BeerStylesService } from './beer-styles.service';
 import {
   CreateBeerStyleDto,
@@ -13,7 +13,14 @@ export class BeerStylesController {
 
   @MessagePattern({ cmd: 'create_beer_style' })
   create(@Payload() createDto: CreateBeerStyleDto) {
-    return this.beerStylesService.create(createDto);
+    try {
+      return this.beerStylesService.create(createDto);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw new RpcException(error.getResponse());
+      }
+      throw error;
+    }
   }
 
   @MessagePattern({ cmd: 'find_all_beer_styles' })
@@ -23,16 +30,37 @@ export class BeerStylesController {
 
   @MessagePattern({ cmd: 'find_one_beer_style' })
   findOne(@Payload() id: number) {
-    return this.beerStylesService.findOne(id);
+    try {
+      return this.beerStylesService.findOne(id);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw new RpcException(error.getResponse());
+      }
+      throw error;
+    }
   }
 
   @MessagePattern({ cmd: 'update_beer_style' })
   update(@Payload() payload: { id: number; updateDto: UpdateBeerStyleDto }) {
-    return this.beerStylesService.update(payload.id, payload.updateDto);
+    try {
+      return this.beerStylesService.update(payload.id, payload.updateDto);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw new RpcException(error.getResponse());
+      }
+      throw error;
+    }
   }
 
   @MessagePattern({ cmd: 'remove_beer_style' })
   remove(@Payload() id: number) {
-    return this.beerStylesService.remove(id);
+    try {
+      return this.beerStylesService.remove(id);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw new RpcException(error.getResponse());
+      }
+      throw error;
+    }
   }
 }
