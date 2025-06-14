@@ -140,4 +140,4 @@ docker-compose down
 
 ## Licença
 
-MIT. Veja o arquivo [LICENSE](https://github.com/nestjs/nest/blob/master/LICENSE).
+MIT. Veja o arquivo [LICENSE](https://github.com/engfernandes/karhub-microservices-challenge/blob/main/LICENSE).
