@@ -8,6 +8,8 @@
 
 Este projeto é composto por um gateway de API e múltiplos microserviços, todos desenvolvidos com [NestJS](https://nestjs.com/) e [TypeScript](https://www.typescriptlang.org/). Ele utiliza uma arquitetura modular e escalável, facilitando a manutenção, testes e evolução do sistema.
 
+#### OBS: Não foi adicionado sistema de autenticação para facilitar os testes e o uso da API. O foco principal é demonstrar a arquitetura de microserviços, a modularidade e a integração entre os serviços.
+
 ---
 
 ## Estrutura do Projeto
@@ -56,6 +58,8 @@ A estrutura do projeto segue o padrão monorepo, utilizando o NestJS para organi
 - [Jest](https://jestjs.io/): Testes unitários e e2e.
 - [Docker](https://www.docker.com/): Contêinerização dos serviços.
 - [ESLint](https://eslint.org/): Linting e padronização de código.
+- [Compodoc](https://compodoc.app/): Documentação automática do código.
+- [Swagger](https://swagger.io/): Documentação interativa da API.
 
 ---
 
@@ -78,7 +82,7 @@ A estrutura do projeto segue o padrão monorepo, utilizando o NestJS para organi
 2. **Suba os serviços Localmente**:
 
 ```bash
-docker-compose up --build
+  docker-compose up --build
 ```
 
 Isso irá:
@@ -93,7 +97,7 @@ Isso irá:
 4. **Parar os serviços**:
 
 ```bash
-docker-compose down
+  docker-compose down
 ```
 
 ---
