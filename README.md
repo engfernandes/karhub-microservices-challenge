@@ -75,7 +75,7 @@ A estrutura do projeto segue o padrão monorepo, utilizando o NestJS para organi
    - [Docker](https://www.docker.com/get-started) instalado (Siga as instruções oficiais de instalação para o seu sistema operacional)
    - [Docker Compose](https://docs.docker.com/compose/) instalado (Siga as instruções oficiais de instalação para o seu sistema operacional)
 
-2. **Suba os serviços**:
+2. **Suba os serviços Localmente**:
 
 ```bash
 docker-compose up --build
@@ -114,6 +114,15 @@ docker-compose down
   pnpm run test:e2e
   pnpm run test:cov
   ```
+
+---
+
+## Documentação
+- Para acessar a documentação detalhada e interativa do projeto, execute o seguinte comando:
+```bash
+  pnpm compodoc
+```
+- A documentação gerada estará disponível em `http://localhost:8080/` após a execução do comando acima.
 
 ---
 
