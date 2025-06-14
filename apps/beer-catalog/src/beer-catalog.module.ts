@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from 'libs/core';
-import { BeerStylesModule } from './modules';
+import { BeerStylesModule, BeersModule } from './modules';
 import { ConfigModule } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
@@ -19,6 +19,7 @@ import { redisStore } from 'cache-manager-redis-store';
     }),
     PrismaModule,
     BeerStylesModule,
+    BeersModule,
   ],
   controllers: [],
   providers: [],
