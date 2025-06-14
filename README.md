@@ -1,4 +1,4 @@
-# API Gateway & Microservices - Documentação
+# Karhub Challenge - Documentação
 
 <p align="center">
   <img src="https://nestjs.com/img/logo-small.svg" width="120" alt="NestJS Logo" />
@@ -70,6 +70,7 @@ A estrutura do projeto segue o padrão monorepo, utilizando o NestJS para organi
 - **Testes Automatizados**: Testes unitários e de integração com Jest.
 - **Docker & Docker Compose**: Facilita o setup e execução local dos serviços.
 - **Padronização de Código**: ESLint e configuração de TypeScript.
+- **Documentação Interativa**: Swagger para fácil acesso à API e Compodoc para documentação do código.
 
 ---
 
@@ -122,7 +123,7 @@ Isso irá:
 ---
 
 ## Documentação
-- Para acessar a documentação detalhada e interativa do projeto, execute o seguinte comando:
+- Para acessar a documentação detalhada e interativa do projeto (em inglês), execute o seguinte comando:
 ```bash
   pnpm compodoc
 ```
