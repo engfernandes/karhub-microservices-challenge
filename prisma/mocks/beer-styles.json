@@ -1,0 +1,156 @@
+[
+  {
+    "name": "Pilsen",
+    "minTemperature": 0,
+    "maxTemperature": 4,
+    "averageTemperature": 2,
+    "description": "Clara, leve e com amargor sutil, é o estilo mais popular no Brasil. Possui notas de malte e lúpulo bem equilibradas, sendo muito refrescante."
+  },
+  {
+    "name": "American Lager",
+    "minTemperature": 0,
+    "maxTemperature": 4,
+    "averageTemperature": 2,
+    "description": "Semelhante à Pilsen, porém ainda mais leve e com menos presença de lúpulo. É uma cerveja de alta \"drinkability\", ou seja, fácil de beber."
+  },
+  {
+    "name": "Witbier",
+    "minTemperature": 2,
+    "maxTemperature": 4,
+    "averageTemperature": 3,
+    "description": "Cerveja de trigo belga, de cor clara e turva. É condimentada, com sementes de coentro e casca de laranja, o que lhe confere um caráter cítrico e refrescante."
+  },
+  {
+    "name": "Helles",
+    "minTemperature": 2,
+    "maxTemperature": 4,
+    "averageTemperature": 3,
+    "description": "Cerveja de baixa fermentação, dourada e límpida, de origem alemã. Apresenta um equilíbrio entre o dulçor do malte e um leve amargor do lúpulo."
+  },
+  {
+    "name": "Sour (Berliner Weisse/Gose)",
+    "minTemperature": 3,
+    "maxTemperature": 7,
+    "averageTemperature": 5,
+    "description": "Cervejas intencionalmente ácidas e azedas. Podem ser leves e refrescantes (Berliner Weisse) ou levar adição de sal e especiarias (Gose), muitas vezes com adição de frutas."
+  },
+  {
+    "name": "Weissbier (Hefeweizen)",
+    "minTemperature": 4,
+    "maxTemperature": 6,
+    "averageTemperature": 5,
+    "description": "Cerveja de trigo alemã, turva e com espuma cremosa. Seus aromas e sabores característicos remetem a banana e cravo, provenientes da levedura."
+  },
+  {
+    "name": "Saison",
+    "minTemperature": 5,
+    "maxTemperature": 8,
+    "averageTemperature": "6,5",
+    "description": "Estilo belga rústico, com uma carbonatação viva e um final seco. É complexa, com notas frutadas, condimentadas e um leve toque terroso."
+  },
+  {
+    "name": "Rauchbier",
+    "minTemperature": 6,
+    "maxTemperature": 10,
+    "averageTemperature": 8,
+    "description": "Cerveja alemã produzida com maltes defumados. Possui um aroma e sabor marcantes de fumaça e defumado, lembrando bacon ou carne defumada."
+  },
+  {
+    "name": "American Pale Ale (APA)",
+    "minTemperature": 7,
+    "maxTemperature": 10,
+    "averageTemperature": "8,5",
+    "description": "Versão menos amarga que a IPA, mas ainda com presença marcante de lúpulos americanos, que conferem notas cítricas e frutadas."
+  },
+  {
+    "name": "Porter",
+    "minTemperature": 7,
+    "maxTemperature": 10,
+    "averageTemperature": "8,5",
+    "description": "Cerveja escura com notas de malte torrado que lembram café e chocolate. Possui um corpo médio e um amargor equilibrado."
+  },
+  {
+    "name": "India Pale Ale (IPA)",
+    "minTemperature": 7,
+    "maxTemperature": 12,
+    "averageTemperature": "9,5",
+    "description": "Conhecida pelo amargor pronunciado e aromas cítricos, florais e resinosos, devido à grande quantidade de lúpulo. Possui muitas variações (Session, Hazy, Double)."
+  },
+  {
+    "name": "Dubbel",
+    "minTemperature": 8,
+    "maxTemperature": 12,
+    "averageTemperature": 10,
+    "description": "Cerveja belga de abadia, de cor âmbar a marrom. Apresenta sabores complexos de malte, frutas escuras (como passas e ameixas) e um leve condimentado."
+  },
+  {
+    "name": "Bock",
+    "minTemperature": 8,
+    "maxTemperature": 12,
+    "averageTemperature": 10,
+    "description": "De cor cobre a marrom escuro. É encorpada e alcoólica, com notas de malte tostado que remetem a pão, caramelo e nozes."
+  },
+  {
+    "name": "Tripel",
+    "minTemperature": 8,
+    "maxTemperature": 12,
+    "averageTemperature": 10,
+    "description": "Cerveja belga dourada, complexa e de alto teor alcoólico. Apresenta notas frutadas e condimentadas, com um final geralmente seco."
+  },
+  {
+    "name": "Stout",
+    "minTemperature": 8,
+    "maxTemperature": 13,
+    "averageTemperature": "10,5",
+    "description": "Mais escura e intensa que a Porter, com notas pronunciadas de café torrado, chocolate amargo e, por vezes, um final seco. Variações incluem Dry Stout e Imperial Stout."
+  },
+  {
+    "name": "Doppelbock",
+    "minTemperature": 9,
+    "maxTemperature": 12,
+    "averageTemperature": "10,5",
+    "description": "Versão mais forte e maltada da Bock, de origem alemã. É muito encorpada, com dulçor de malte intenso e sabores de pão preto, caramelo e frutas secas."
+  },
+  {
+    "name": "Quadrupel",
+    "minTemperature": 10,
+    "maxTemperature": 14,
+    "averageTemperature": 12,
+    "description": "Cerveja belga de abadia, a mais forte e complexa de todas. De cor marrom escura, possui alto teor alcoólico e sabores ricos de frutas escuras, melaço e especiarias."
+  },
+  {
+    "name": "Barleywine",
+    "minTemperature": 10,
+    "maxTemperature": 14,
+    "averageTemperature": 12,
+    "description": "Uma das cervejas mais alcoólicas. Pode ser inglesa (focada no malte, com notas de caramelo e toffee) ou americana (com forte presença de lúpulo e amargor). Ideal para ser degustada lentamente."
+  },
+  {
+    "name": "Belgian Blond Ale",
+    "minTemperature": 4,
+    "maxTemperature": 7,
+    "averageTemperature": "5,5",
+    "description": "De cor dourada, é uma cerveja belga acessível e equilibrada. Apresenta notas frutadas e condimentadas (provenientes da levedura), com um leve dulçor de malte e final seco."
+  },
+  {
+    "name": "Belgian Golden Strong Ale",
+    "minTemperature": 6,
+    "maxTemperature": 10,
+    "averageTemperature": 8,
+    "description": "Dourada, complexa e perigosamente fácil de beber devido ao seu alto teor alcoólico bem inserido. É bastante carbonatada, com notas frutadas (pera, maçã) e condimentadas."
+  },
+  {
+    "name": "Sour (Catharina Sour)",
+    "minTemperature": 3,
+    "maxTemperature": 7,
+    "averageTemperature": 5,
+    "description": "Estilo brasileiro, é uma cerveja de trigo intencionalmente ácida, leve e refrescante. Sua principal característica é a adição de uma ou mais frutas frescas, que complementam sua acidez lática."
+  },
+  {
+    "name": "Weissbier",
+    "minTemperature": 4,
+    "maxTemperature": 6,
+    "averageTemperature": 5,
+    "description": "Cerveja de trigo alemã, turva, com espuma abundante e cremosa. Seus aromas e sabores mais marcantes, vindos da levedura, são de banana e cravo."
+  }
+]

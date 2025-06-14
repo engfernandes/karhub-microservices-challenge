@@ -5,5 +5,13 @@
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
-  }
+  },
+  "moduleNameMapper": {
+    "^libs/common(|/.*)$": "<rootDir>/../../../libs/common/$1",
+    "^libs/core(|/.*)$": "<rootDir>/../../../libs/core/$1"
+  },
+  "coverageDirectory": "./coverage-e2e",
+  "testTimeout": 30000,
+  "forceExit": true,
+  "detectOpenHandles": true
 }

@@ -1,0 +1,134 @@
+services:
+  # Serviço do Banco de Dados PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: karhub-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - karhub-net
+
+  # Serviço do Cache em Memória
+  redis:
+    image: redis:7-alpine
+    container_name: karhub-redis
+    ports:
+      - '6379:6379'
+    networks:
+      - karhub-net
+
+  # Serviço de Mensageria
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: karhub-rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    networks:
+      - karhub-net
+
+  # ✅ NOVO SERVIÇO "ONE-SHOT" PARA MIGRAÇÃO E SEED
+  # Este container executa uma única tarefa e depois termina.
+  migrations:
+    container_name: karhub-migrations
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Reutiliza a imagem de qualquer app, pois já tem o código e as dependências.
+      args:
+        APP_NAME: migrations
+    env_file:
+      - .env
+    # A tarefa que ele vai executar.
+    command: ["/bin/sh", "-c", "npx prisma migrate deploy && pnpm seed"]
+    depends_on:
+      postgres:
+        condition: service_healthy # Espera o banco de dados estar pronto.
+    networks:
+      - karhub-net
+
+  # Serviço do API Gateway
+  api-gateway:
+    container_name: karhub-api-gateway
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: api-gateway
+    ports:
+      - '${PORT}:${PORT}'
+    env_file:
+      - .env
+    depends_on:
+      # ✅ ALTERAÇÃO: Agora espera o serviço de migração terminar com sucesso.
+      migrations:
+        condition: service_completed_successfully
+      # As outras dependências de serviços que precisam estar rodando permanecem.
+      beer-catalog:
+        condition: service_started
+      beer-machine:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+      redis:
+        condition: service_started
+    networks:
+      - karhub-net
+
+  # Serviço do Catálogo de Cervejas
+  beer-catalog:
+    container_name: karhub-beer-catalog
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: beer-catalog
+    env_file:
+      - .env
+    depends_on:
+      # ✅ ALTERAÇÃO: Também espera o serviço de migração.
+      migrations:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_started
+      redis:
+        condition: service_started
+    networks:
+      - karhub-net
+
+  # Serviço da Máquina de Cervejas
+  beer-machine:
+    container_name: karhub-beer-machine
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: beer-machine
+    env_file:
+      - .env
+    depends_on:
+      # ✅ ALTERAÇÃO: Também espera o serviço de migração.
+      migrations:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_started
+      redis:
+        condition: service_started
+    networks:
+      - karhub-net
+
+# Definição da rede compartilhada
+networks:
+  karhub-net:
+    driver: bridge
