@@ -79,8 +79,37 @@ A estrutura do projeto segue o padrão monorepo, utilizando o NestJS para organi
 1. **Pré-requisitos**:
    - [Docker](https://www.docker.com/get-started) instalado (Siga as instruções oficiais de instalação para o seu sistema operacional)
    - [Docker Compose](https://docs.docker.com/compose/) instalado (Siga as instruções oficiais de instalação para o seu sistema operacional)
+   - [Spotify - Client ID e Secret](https://developer.spotify.com/documentation/general/guides/app-settings/) (Crie uma conta de desenvolvedor no Spotify e obtenha as credenciais)
 
-2. **Suba os serviços Localmente**:
+2. **Configuração do Ambiente**:
+   - Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis de ambiente:
+     ```env
+     # Spotify API
+     SPOTIFY_CLIENT_ID=<seu_spotify_client_id>
+     SPOTIFY_CLIENT_SECRET=<seu_spotify_client_secret>
+    
+     # PostgreSQL
+     POSTGRES_USER=karhub
+     POSTGRES_PASSWORD=supersecret
+     POSTGRES_DB=karhub
+     DATABASE_URL="postgresql://karhub:supersecret@postgres:5432/karhub?schema=public"
+    
+     # Redis
+     REDIS_URL="redis://redis:6379"
+    
+     # RabbitMQ
+     RABBITMQ_URL="amqp://guest:guest@rabbitmq:5672"
+    
+     # Docker Compose
+     COMPOSE_BAKE=true
+     ```
+   - Certifique-se de que o Docker e o Docker Compose estão funcionando corretamente.
+
+3. **Configurar credenciais do Spotify**:
+   - Crie um aplicativo no [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/applications) e obtenha o `Client ID` e `Client Secret`.
+   - Substitua o valor das variáveis SPOTIFY_CLIENT_ID e SPOTIFY_CLIENT_SECRET com os valores obtidos na etapa anterior. 
+
+4. **Suba os serviços Localmente**:
 
 ```bash
   docker-compose up --build
@@ -92,10 +121,10 @@ Isso irá:
 - Cadastrar dados mockados no banco de dados
 - Expor as portas configuradas (consulte o docker-compose.yml para detalhes)
 
-3. **Acessando o Gateway**:
-- O API Gateway estará disponível em `http://localhost:3000` (ou porta configurada) e o Swagger em `http://localhost:3000/api/swagger`.
+5. **Acessando o Gateway**:
+   - O API Gateway estará disponível em `http://localhost:3000` (ou porta configurada) e o Swagger em `http://localhost:3000/api/swagger`.
 
-4. **Parar os serviços**:
+6. **Parar os serviços**:
 
 ```bash
   docker-compose down
