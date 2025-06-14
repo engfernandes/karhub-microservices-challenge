@@ -1,4 +1,4 @@
-# API Gateway & Microservices - Documentação
+# Karhub Challenge - Documentação
 
 <p align="center">
   <img src="https://nestjs.com/img/logo-small.svg" width="120" alt="NestJS Logo" />
@@ -7,6 +7,8 @@
 ## Visão Geral
 
 Este projeto é composto por um gateway de API e múltiplos microserviços, todos desenvolvidos com [NestJS](https://nestjs.com/) e [TypeScript](https://www.typescriptlang.org/). Ele utiliza uma arquitetura modular e escalável, facilitando a manutenção, testes e evolução do sistema.
+
+#### OBS: Não foi adicionado sistema de autenticação para facilitar os testes e o uso da API. O foco principal é demonstrar a arquitetura de microserviços, a modularidade e a integração entre os serviços.
 
 ---
 
@@ -56,6 +58,8 @@ A estrutura do projeto segue o padrão monorepo, utilizando o NestJS para organi
 - [Jest](https://jestjs.io/): Testes unitários e e2e.
 - [Docker](https://www.docker.com/): Contêinerização dos serviços.
 - [ESLint](https://eslint.org/): Linting e padronização de código.
+- [Compodoc](https://compodoc.app/): Documentação automática do código.
+- [Swagger](https://swagger.io/): Documentação interativa da API.
 
 ---
 
@@ -66,6 +70,7 @@ A estrutura do projeto segue o padrão monorepo, utilizando o NestJS para organi
 - **Testes Automatizados**: Testes unitários e de integração com Jest.
 - **Docker & Docker Compose**: Facilita o setup e execução local dos serviços.
 - **Padronização de Código**: ESLint e configuração de TypeScript.
+- **Documentação Interativa**: Swagger para fácil acesso à API e Compodoc para documentação do código.
 
 ---
 
@@ -74,11 +79,40 @@ A estrutura do projeto segue o padrão monorepo, utilizando o NestJS para organi
 1. **Pré-requisitos**:
    - [Docker](https://www.docker.com/get-started) instalado (Siga as instruções oficiais de instalação para o seu sistema operacional)
    - [Docker Compose](https://docs.docker.com/compose/) instalado (Siga as instruções oficiais de instalação para o seu sistema operacional)
+   - [Spotify - Client ID e Secret](https://developer.spotify.com/documentation/general/guides/app-settings/) (Crie uma conta de desenvolvedor no Spotify e obtenha as credenciais)
 
-2. **Suba os serviços Localmente**:
+2. **Configuração do Ambiente**:
+   - Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis de ambiente:
+     ```env
+     # Spotify API
+     SPOTIFY_CLIENT_ID=<seu_spotify_client_id>
+     SPOTIFY_CLIENT_SECRET=<seu_spotify_client_secret>
+    
+     # PostgreSQL
+     POSTGRES_USER=karhub
+     POSTGRES_PASSWORD=supersecret
+     POSTGRES_DB=karhub
+     DATABASE_URL="postgresql://karhub:supersecret@postgres:5432/karhub?schema=public"
+    
+     # Redis
+     REDIS_URL="redis://redis:6379"
+    
+     # RabbitMQ
+     RABBITMQ_URL="amqp://guest:guest@rabbitmq:5672"
+    
+     # Docker Compose
+     COMPOSE_BAKE=true
+     ```
+   - Certifique-se de que o Docker e o Docker Compose estão funcionando corretamente.
+
+3. **Configurar credenciais do Spotify**:
+   - Crie um aplicativo no [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/applications) e obtenha o `Client ID` e `Client Secret`.
+   - Substitua o valor das variáveis SPOTIFY_CLIENT_ID e SPOTIFY_CLIENT_SECRET com os valores obtidos na etapa anterior. 
+
+4. **Suba os serviços Localmente**:
 
 ```bash
-docker-compose up --build
+  docker-compose up --build
 ```
 
 Isso irá:
@@ -87,13 +121,13 @@ Isso irá:
 - Cadastrar dados mockados no banco de dados
 - Expor as portas configuradas (consulte o docker-compose.yml para detalhes)
 
-3. **Acessando o Gateway**:
-- O API Gateway estará disponível em `http://localhost:3000` (ou porta configurada) e o Swagger em `http://localhost:3000/api/swagger`.
+5. **Acessando o Gateway**:
+   - O API Gateway estará disponível em `http://localhost:3000` (ou porta configurada) e o Swagger em `http://localhost:3000/api/swagger`.
 
-4. **Parar os serviços**:
+6. **Parar os serviços**:
 
 ```bash
-docker-compose down
+  docker-compose down
 ```
 
 ---
@@ -118,7 +152,7 @@ docker-compose down
 ---
 
 ## Documentação
-- Para acessar a documentação detalhada e interativa do projeto, execute o seguinte comando:
+- Para acessar a documentação detalhada e interativa do projeto (em inglês), execute o seguinte comando:
 ```bash
   pnpm compodoc
 ```
@@ -140,4 +174,4 @@ docker-compose down
 
 ## Licença
 
-MIT. Veja o arquivo [LICENSE](https://github.com/nestjs/nest/blob/master/LICENSE).
+MIT. Veja o arquivo [LICENSE](https://github.com/engfernandes/karhub-microservices-challenge/blob/main/LICENSE).
