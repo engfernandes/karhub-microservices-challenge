@@ -1,13 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   INestApplication,
-  NotFoundException, // ✅ MUDANÇA 1: Importar NotFoundException
+  NotFoundException,
   ValidationPipe,
-  HttpStatus,
 } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule as ApiGatewayAppModule } from '../src/app.module';
-import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { of, throwError } from 'rxjs';
 import {
   BeerStyleEntity,
@@ -16,7 +14,6 @@ import {
 } from 'libs/common';
 import { faker } from '@faker-js/faker/locale/pt_BR';
 
-// Mock com a simulação de erro corrigida
 class MockBeerCatalogClientProxy {
   private styles: BeerStyleEntity[] = [];
   private nextId = 1;
@@ -68,7 +65,6 @@ class MockBeerCatalogClientProxy {
         if (style) {
           return of({ data: style });
         }
-        // ✅ MUDANÇA 2: Lançar NotFoundException diretamente
         return throwError(
           () =>
             new NotFoundException(`BeerStyle with ID #${payload} not found`),
@@ -80,7 +76,6 @@ class MockBeerCatalogClientProxy {
           Object.assign(styleToUpdate, payload.updateDto);
           return of({ data: styleToUpdate });
         }
-        // ✅ MUDANÇA 2: Lançar NotFoundException diretamente
         return throwError(
           () =>
             new NotFoundException(`BeerStyle with ID #${payload.id} not found`),
@@ -92,7 +87,6 @@ class MockBeerCatalogClientProxy {
           this.styles.splice(styleIndex, 1);
           return of({ data: undefined });
         }
-        // ✅ MUDANÇA 2: Lançar NotFoundException diretamente
         return throwError(
           () =>
             new NotFoundException(`BeerStyle with ID #${payload} not found`),
@@ -126,10 +120,6 @@ describe('BeerStylesController (e2e)', () => {
   afterEach(async () => {
     await app.close();
   });
-
-  // O corpo dos testes (os blocos 'describe' e 'it') permanecem
-  // exatamente os mesmos da versão anterior, pois a lógica de
-  // asserção e a estrutura esperada já estavam corretas.
 
   describe('POST /beer-styles', () => {
     it('should create a new beer style and return 201 Created', () => {
@@ -197,7 +187,6 @@ describe('BeerStylesController (e2e)', () => {
         .delete(`/beer-styles/${createdId}`)
         .expect(204);
 
-      // ✅ Este teste agora DEVE passar.
       await request(app.getHttpServer())
         .get(`/beer-styles/${createdId}`)
         .expect(404);
