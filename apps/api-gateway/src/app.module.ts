@@ -5,6 +5,7 @@ import {
   BeerStylesController,
   BeerMachineController,
   BeersController,
+  BreweriesController,
 } from './modules';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
@@ -51,7 +52,12 @@ import { redisStore } from 'cache-manager-redis-store';
       },
     ]),
   ],
-  controllers: [BeerStylesController, BeerMachineController, BeersController],
+  controllers: [
+    BeerStylesController,
+    BeerMachineController,
+    BeersController,
+    BreweriesController,
+  ],
   providers: [],
 })
 export class AppModule {}

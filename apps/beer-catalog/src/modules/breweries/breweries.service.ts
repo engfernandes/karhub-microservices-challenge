@@ -18,7 +18,7 @@ const FILTER_CONFIG: FilterConfig = {
     modelField: 'name',
   },
 };
-const ALLOWED_SORT_FIELDS = ['name', 'createdAt', 'updatedAt'];
+const ALLOWED_SORT_FIELDS = ['id', 'name', 'createdAt', 'updatedAt'];
 
 @Injectable()
 export class BreweriesService {
