@@ -25,7 +25,7 @@ export class BeerMachineController {
   @ApiResponse({ status: 200, description: 'Recommendation found.' })
   @ApiResponse({
     status: 404,
-    description: 'No suitable recommendation or playlist found.',
+    description: 'No suitable recommendation',
   })
   @ApiResponse({ status: 400, description: 'Invalid temperature provided.' })
   async getBeerPairing(
