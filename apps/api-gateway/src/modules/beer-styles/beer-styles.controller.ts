@@ -33,6 +33,10 @@ import {
 } from 'libs/common';
 import { lastValueFrom } from 'rxjs';
 
+/**
+ * Controller responsible for handling beer style-related HTTP requests.
+ * Communicates with the beer-catalog microservice to perform CRUD operations on beer styles.
+ */
 @ApiTags('Beer Styles')
 @Controller('beer-styles')
 export class BeerStylesController {
@@ -40,6 +44,11 @@ export class BeerStylesController {
     @Inject('BEER_CATALOG_SERVICE') private beerCatalogClient: ClientProxy,
   ) {}
 
+  /**
+   * Creates a new beer style.
+   * @param createBeerStyleDto The data to create the new beer style.
+   * @returns The created beer style entity wrapped in a response entity.
+   */
   @Post()
   @ApiOperation({ summary: 'Create a new beer style' })
   @ApiCreatedResponse({
@@ -59,6 +68,11 @@ export class BeerStylesController {
     return await lastValueFrom(response$);
   }
 
+  /**
+   * Retrieves all beer styles with optional pagination and filters.
+   * @param query Query parameters for filtering and pagination.
+   * @returns A paginated list of beer style entities wrapped in a response entity.
+   */
   @Get()
   @ApiOperation({
     summary: 'Retrieve all beer styles with pagination and filters',
@@ -79,6 +93,11 @@ export class BeerStylesController {
     return await lastValueFrom(response$);
   }
 
+  /**
+   * Retrieves a beer style by its ID.
+   * @param id The ID of the beer style to retrieve.
+   * @returns The requested beer style entity wrapped in a response entity.
+   */
   @Get(':id')
   @ApiOperation({ summary: 'Retrieve a single beer style by its ID' })
   @ApiOkResponse({
@@ -100,6 +119,12 @@ export class BeerStylesController {
     return await lastValueFrom(response$);
   }
 
+  /**
+   * Updates an existing beer style by its ID.
+   * @param id The ID of the beer style to update.
+   * @param updateBeerStyleDto The data to update the beer style.
+   * @returns The updated beer style entity wrapped in a response entity.
+   */
   @Patch(':id')
   @ApiOperation({ summary: 'Update an existing beer style' })
   @ApiOkResponse({
@@ -121,6 +146,10 @@ export class BeerStylesController {
     return await lastValueFrom(response$);
   }
 
+  /**
+   * Removes a beer style by its ID.
+   * @param id The ID of the beer style to remove.
+   */
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Remove a beer style' })

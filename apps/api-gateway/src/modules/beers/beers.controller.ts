@@ -33,6 +33,10 @@ import {
 import { lastValueFrom } from 'rxjs';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
+/**
+ * Controller responsible for handling beer-related HTTP requests.
+ * Communicates with the beer-catalog microservice to perform CRUD operations on beers.
+ */
 @ApiTags('Beers')
 @Controller('beers')
 export class BeersController {
@@ -40,6 +44,11 @@ export class BeersController {
     @Inject('BEER_CATALOG_SERVICE') private beerCatalogClient: ClientProxy,
   ) {}
 
+  /**
+   * Creates a new beer.
+   * @param createBeerDto The data to create the new beer.
+   * @returns The created beer entity wrapped in a response entity.
+   */
   @Post()
   @ApiOperation({ summary: 'Create a new beer' })
   @ApiCreatedResponse({
@@ -60,6 +69,11 @@ export class BeersController {
     return await lastValueFrom(response$);
   }
 
+  /**
+   * Retrieves all beers with optional pagination and filters.
+   * @param query Query parameters for filtering and pagination.
+   * @returns A paginated list of beer entities wrapped in a response entity.
+   */
   @Get()
   @ApiOperation({ summary: 'Retrieve all beers with pagination and filters' })
   @ApiOkResponse({
@@ -79,6 +93,11 @@ export class BeersController {
     return await lastValueFrom(response$);
   }
 
+  /**
+   * Retrieves a beer by its ID.
+   * @param id The ID of the beer to retrieve.
+   * @returns The requested beer entity wrapped in a response entity.
+   */
   @Get(':id')
   @ApiOperation({ summary: 'Retrieve a beer by its ID' })
   @ApiOkResponse({
@@ -98,6 +117,12 @@ export class BeersController {
     return await lastValueFrom(response$);
   }
 
+  /**
+   * Updates an existing beer by its ID.
+   * @param id The ID of the beer to update.
+   * @param updateBeerDto The data to update the beer.
+   * @returns The updated beer entity wrapped in a response entity.
+   */
   @Patch(':id')
   @ApiOperation({ summary: 'Update an existing beer' })
   @ApiOkResponse({
@@ -120,6 +145,10 @@ export class BeersController {
     return await lastValueFrom(response$);
   }
 
+  /**
+   * Removes a beer by its ID.
+   * @param id The ID of the beer to remove.
+   */
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Remove a beer' })

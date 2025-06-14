@@ -32,6 +32,10 @@ import {
 import { lastValueFrom } from 'rxjs';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
+/**
+ * Controller responsible for handling brewery-related HTTP requests.
+ * Communicates with the beer-catalog microservice to perform CRUD operations on breweries.
+ */
 @ApiTags('Breweries')
 @Controller('breweries')
 export class BreweriesController {
@@ -39,6 +43,11 @@ export class BreweriesController {
     @Inject('BEER_CATALOG_SERVICE') private beerCatalogClient: ClientProxy,
   ) {}
 
+  /**
+   * Creates a new brewery.
+   * @param createBreweryDto The data to create the new brewery.
+   * @returns The created brewery entity wrapped in a response entity.
+   */
   @Post()
   @ApiOperation({
     summary: 'Create a new brewery',
@@ -61,6 +70,11 @@ export class BreweriesController {
     return await lastValueFrom(response$);
   }
 
+  /**
+   * Retrieves all breweries with optional pagination and filters.
+   * @param query Query parameters for filtering and pagination.
+   * @returns A paginated list of brewery entities wrapped in a response entity.
+   */
   @Get()
   @ApiOperation({
     summary: 'Retrieve all breweries with pagination and filters',
@@ -82,6 +96,11 @@ export class BreweriesController {
     return await lastValueFrom(response$);
   }
 
+  /**
+   * Retrieves a brewery by its ID.
+   * @param id The ID of the brewery to retrieve.
+   * @returns The requested brewery entity wrapped in a response entity.
+   */
   @Get(':id')
   @ApiOperation({
     summary: 'Retrieve a brewery by its ID',
@@ -106,6 +125,12 @@ export class BreweriesController {
     return await lastValueFrom(response$);
   }
 
+  /**
+   * Updates an existing brewery by its ID.
+   * @param id The ID of the brewery to update.
+   * @param updateBreweryDto The data to update the brewery.
+   * @returns The updated brewery entity wrapped in a response entity.
+   */
   @Patch(':id')
   @ApiOperation({
     summary: 'Update an existing brewery',
@@ -129,6 +154,11 @@ export class BreweriesController {
 
     return await lastValueFrom(response$);
   }
+
+  /**
+   * Removes a brewery by its ID.
+   * @param id The ID of the brewery to remove.
+   */
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({

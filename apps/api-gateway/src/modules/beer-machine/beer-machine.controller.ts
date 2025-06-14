@@ -11,6 +11,10 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { lastValueFrom } from 'rxjs';
 import { GetBeerPairingDto } from 'libs/common';
 
+/**
+ * Controller responsible for providing beer and playlist recommendations based on temperature.
+ * Communicates with the beer-machine microservice to retrieve pairing suggestions.
+ */
 @ApiTags('Beer Machine Recommendations')
 @Controller('beer-pairings')
 export class BeerMachineController {
@@ -18,6 +22,12 @@ export class BeerMachineController {
     @Inject('BEER_MACHINE_SERVICE') private beerMachineClient: ClientProxy,
   ) {}
 
+  /**
+   * Gets a beer and playlist recommendation for a given temperature.
+   * @param query The query containing the temperature value.
+   * @returns The beer and playlist recommendation.
+   * @throws {NotFoundException} If no suitable recommendation is found.
+   */
   @Get()
   @ApiOperation({
     summary: 'Get a beer and playlist recommendation based on temperature',
