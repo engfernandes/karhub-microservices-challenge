@@ -16,7 +16,7 @@ export type FilterConfig = {
  * Builds a Prisma 'where' clause from a query DTO and a configuration map.
  * This function is generic and can be used for any Prisma model.
  *
- * @param TWhereInput The specific Prisma WhereInput type (e.g., Prisma.BeerStyleWhereInput).
+ * @template TWhereInput The specific Prisma WhereInput type (e.g., Prisma.BeerStyleWhereInput).
  * @param query The DTO containing the URL query parameters.
  * @param config The map that defines how to translate query parameters into Prisma filters.
  * @returns An object of type TWhereInput, ready to be used with Prisma.
@@ -38,7 +38,7 @@ export function parseWhere<TWhereInput>(
       const { operator, modelField } = config[key];
       const field = modelField || key;
 
-      let condition = {};
+      const condition = {};
       switch (operator) {
         case 'contains':
           if (typeof value === 'string') {

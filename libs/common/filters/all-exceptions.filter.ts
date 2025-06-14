@@ -9,10 +9,19 @@ import {
 import { RpcException } from '@nestjs/microservices';
 import { Request, Response } from 'express';
 
+/**
+ * Global exception filter that catches all unhandled exceptions and formats the HTTP response.
+ * Handles both HTTP and RPC exceptions, logs errors, and provides a consistent error response structure.
+ */
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
 
+  /**
+   * Handles the caught exception and sends a formatted HTTP response.
+   * @param exception The exception thrown during request processing.
+   * @param host The arguments host containing request and response objects.
+   */
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();

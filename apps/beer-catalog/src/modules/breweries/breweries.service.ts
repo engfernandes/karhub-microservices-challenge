@@ -20,10 +20,19 @@ const FILTER_CONFIG: FilterConfig = {
 };
 const ALLOWED_SORT_FIELDS = ['id', 'name', 'createdAt', 'updatedAt'];
 
+/**
+ * Service responsible for managing breweries, including creation, retrieval, update, and deletion.
+ */
 @Injectable()
 export class BreweriesService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Creates a new brewery.
+   * @param createBreweryDto The data to create the new brewery.
+   * @returns The newly created brewery entity.
+   * @throws {Error} If a brewery with the same name already exists.
+   */
   async create(
     createBreweryDto: CreateBreweryDto,
   ): Promise<ResponseEntity<BreweryEntity>> {
@@ -41,6 +50,11 @@ export class BreweriesService {
     }
   }
 
+  /**
+   * Returns a list of all breweries, with optional filtering, sorting, and pagination.
+   * @param query The query parameters for filtering, sorting, and pagination.
+   * @returns A paginated response entity containing brewery entities.
+   */
   async findAll(
     query: QueryBreweryDto,
   ): Promise<ResponseEntity<BreweryEntity[]>> {
@@ -71,12 +85,25 @@ export class BreweriesService {
     return new ResponseEntity<BreweryEntity[]>(data, meta);
   }
 
+  /**
+   * Finds a single brewery by its ID.
+   * @param id The ID of the brewery to be found.
+   * @returns The found brewery entity.
+   * @throws {Error} If the brewery with the provided ID is not found.
+   */
   async findOne(id: number): Promise<ResponseEntity<BreweryEntity>> {
     const brewery = await this.findBreweryById(id);
 
     return new ResponseEntity<BreweryEntity>(new BreweryEntity(brewery));
   }
 
+  /**
+   * Updates an existing brewery.
+   * @param id The ID of the brewery to be updated.
+   * @param updateBreweryDto The data to be updated.
+   * @returns The updated brewery entity.
+   * @throws {Error} If the brewery with the provided ID is not found.
+   */
   async update(
     id: number,
     updateBreweryDto: UpdateBreweryDto,
@@ -91,6 +118,12 @@ export class BreweriesService {
     return new ResponseEntity<BreweryEntity>(new BreweryEntity(updatedBrewery));
   }
 
+  /**
+   * Removes a brewery from the database.
+   * @param id The ID of the brewery to be removed.
+   * @returns An empty response entity.
+   * @throws {Error} If the brewery with the provided ID is not found.
+   */
   async remove(id: number): Promise<ResponseEntity<void>> {
     await this.findBreweryById(id);
 
@@ -101,6 +134,12 @@ export class BreweriesService {
     return new ResponseEntity<void>(undefined);
   }
 
+  /**
+   * Finds a brewery by its ID or throws an Error if not found.
+   * @param id The ID of the brewery.
+   * @returns The found brewery entity.
+   * @throws {Error} If the brewery with the provided ID is not found.
+   */
   async findBreweryById(id: number): Promise<BreweryEntity> {
     const brewery = await this.prisma.brewery.findUnique({
       where: { id },

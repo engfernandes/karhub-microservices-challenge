@@ -26,6 +26,10 @@ export interface SpotifyPlaylist {
   };
 }
 
+/**
+ * Service responsible for interacting with the Spotify API, including searching for playlists
+ * and managing access tokens with caching.
+ */
 @Injectable()
 export class SpotifyService {
   private readonly logger = new Logger(SpotifyService.name);
@@ -53,6 +57,7 @@ export class SpotifyService {
    * Searches for a playlist on Spotify that contains the query term.
    * @param query The name of the beer style (or any search term).
    * @returns The first playlist found or null if none is found.
+   * @throws {InternalServerErrorException} If there is a failure communicating with the Spotify API.
    */
   async searchPlaylist(query: string): Promise<SpotifyPlaylist | null> {
     const cacheKey = `spotify:playlist:${query}`;
@@ -127,6 +132,7 @@ export class SpotifyService {
   /**
    * Gets a valid access token, either from cache or by fetching a new one.
    * @returns The access token.
+   * @throws {InternalServerErrorException} If unable to fetch a new token from Spotify.
    */
   private async getValidToken(): Promise<string> {
     const cachedToken = await this.cacheManager.get<string>(
@@ -147,6 +153,7 @@ export class SpotifyService {
   /**
    * Fetches a new access token from the Spotify API (Client Credentials Flow).
    * @returns The new access token.
+   * @throws {InternalServerErrorException} If authentication with Spotify fails.
    */
   private async fetchNewToken(): Promise<string> {
     const authUrl = 'https://accounts.spotify.com/api/token';

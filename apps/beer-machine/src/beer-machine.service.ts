@@ -6,8 +6,12 @@ import {
   BeerStyleEntity,
   ResponseEntity,
 } from 'libs/common';
-import { SpotifyService, SpotifyPlaylist } from './modules/spotify';
+import { SpotifyService, SpotifyPlaylist } from './modules';
 
+/**
+ * Service responsible for providing beer style pairings based on temperature,
+ * integrating with the beer-catalog microservice and Spotify playlists.
+ */
 @Injectable()
 export class BeerMachineService {
   private readonly logger = new Logger(BeerMachineService.name);
@@ -17,6 +21,12 @@ export class BeerMachineService {
     private readonly spotifyService: SpotifyService,
   ) {}
 
+  /**
+   * Gets the best beer style pairing for a given temperature, including a Spotify playlist suggestion.
+   * @param temperature The temperature in Celsius to find the best beer style for.
+   * @returns A response entity containing the beer pairing entity.
+   * @throws {NotFoundException} If no suitable beer style is found for the given temperature.
+   */
   async getBeerPairing(
     temperature: number,
   ): Promise<ResponseEntity<BeerPairingEntity>> {
@@ -28,7 +38,7 @@ export class BeerMachineService {
       ResponseEntity<BeerStyleEntity[]>
     >({ cmd: 'find_best_style_by_temp' }, { temperature });
     const response = await firstValueFrom(response$);
-    let bestFitStyles = response.data;
+    const bestFitStyles = response.data;
 
     if (!bestFitStyles || bestFitStyles.length === 0) {
       throw new NotFoundException(

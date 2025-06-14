@@ -18,9 +18,12 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/api-gateway/test/jest-e2e.json",
-    "seed": "ts-node prisma/seed.ts"
+    "build:seed": "tsc prisma/seed.ts --outDir dist/prisma --resolveJsonModule true --module commonjs --target es2021",
+    "seed": "node dist/prisma/seed.js",
+    "compodoc": "compodoc -p tsconfig.json -s"
   },
   "dependencies": {
+    "@compodoc/compodoc": "^1.1.26",
     "@nestjs/axios": "^4.0.0",
     "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^11.0.1",

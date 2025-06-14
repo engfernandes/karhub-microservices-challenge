@@ -84,6 +84,7 @@ docker-compose up --build
 Isso irá:
 - Construir as imagens dos serviços
 - Subir o banco de dados e todos os microserviços
+- Cadastrar dados mockados no banco de dados
 - Expor as portas configuradas (consulte o docker-compose.yml para detalhes)
 
 3. **Acessando o Gateway**:

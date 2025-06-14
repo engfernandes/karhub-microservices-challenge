@@ -24,6 +24,10 @@ const FILTER_CONFIG: FilterConfig = {
 };
 const ALLOWED_SORT_FIELDS = ['id', 'name', 'createdAt', 'updatedAt'];
 
+/**
+ * Service responsible for managing beer styles, including creation, retrieval, update, deletion,
+ * and finding the best match by temperature.
+ */
 @Injectable()
 export class BeerStylesService {
   constructor(private prisma: PrismaService) {}
@@ -32,6 +36,7 @@ export class BeerStylesService {
    * Creates a new beer style, automatically calculating its average temperature.
    * @param createBeerStyleDto The data to create the new style.
    * @returns The newly created beer style entity.
+   * @throws {ConflictException} If a beer style with the same name already exists.
    */
   async create(
     createBeerStyleDto: CreateBeerStyleDto,
@@ -155,6 +160,12 @@ export class BeerStylesService {
     return new ResponseEntity<void>(undefined);
   }
 
+  /**
+   * Finds a beer style by its ID or throws a NotFoundException if not found.
+   * @param id The ID of the beer style.
+   * @returns The found beer style.
+   * @throws {NotFoundException} If the style with the provided ID is not found.
+   */
   private async findStyleById(id: number): Promise<BeerStyle> {
     const beerStyle = await this.prisma.beerStyle.findUnique({
       where: { id },
@@ -167,6 +178,11 @@ export class BeerStylesService {
     return beerStyle;
   }
 
+  /**
+   * Finds the beer style(s) whose average temperature is closest to the provided temperature.
+   * @param temp The temperature to match against beer styles.
+   * @returns An array of beer style entities that best match the temperature.
+   */
   async findBestMatchByTemperature(temp: number): Promise<BeerStyleEntity[]> {
     const allStyles = await this.prisma.beerStyle.findMany({
       select: { averageTemperature: true },

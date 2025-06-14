@@ -52,10 +52,19 @@ const ALLOWED_SORT_FIELDS = [
   'breweryId',
 ];
 
+/**
+ * Service responsible for managing beers, including creation, retrieval, update, and deletion.
+ */
 @Injectable()
 export class BeersService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Creates a new beer.
+   * @param createBeerDto The data to create the new beer.
+   * @returns The newly created beer entity.
+   * @throws {ConflictException} If a beer with the same name already exists.
+   */
   async create(
     createBeerDto: CreateBeerDto,
   ): Promise<ResponseEntity<BeerEntity>> {
@@ -73,6 +82,11 @@ export class BeersService {
     }
   }
 
+  /**
+   * Returns a list of all beers, with optional filtering, sorting, and pagination.
+   * @param query The query parameters for filtering, sorting, and pagination.
+   * @returns A paginated response entity containing beer entities.
+   */
   async findAll(query: QueryBeerDto): Promise<ResponseEntity<BeerEntity[]>> {
     const { sortBy } = query;
     const page = query?.page || 1;
@@ -103,12 +117,25 @@ export class BeersService {
     return new ResponseEntity<BeerEntity[]>(data, meta);
   }
 
+  /**
+   * Finds a single beer by its ID.
+   * @param id The ID of the beer to be found.
+   * @returns The found beer entity.
+   * @throws {NotFoundException} If the beer with the provided ID is not found.
+   */
   async findOne(id: number): Promise<ResponseEntity<BeerEntity>> {
     const beer = await this.findBeerById(id);
 
     return new ResponseEntity<BeerEntity>(new BeerEntity(beer));
   }
 
+  /**
+   * Updates an existing beer.
+   * @param id The ID of the beer to be updated.
+   * @param updateBeerDto The data to be updated.
+   * @returns The updated beer entity.
+   * @throws {NotFoundException} If the beer with the provided ID is not found.
+   */
   async update(
     id: number,
     updateBeerDto: UpdateBeerDto,
@@ -127,6 +154,12 @@ export class BeersService {
     return new ResponseEntity<BeerEntity>(new BeerEntity(updatedBeer));
   }
 
+  /**
+   * Removes a beer from the database.
+   * @param id The ID of the beer to be removed.
+   * @returns An empty response entity.
+   * @throws {NotFoundException} If the beer with the provided ID is not found.
+   */
   async remove(id: number): Promise<ResponseEntity<void>> {
     await this.findBeerById(id);
 
@@ -135,6 +168,12 @@ export class BeersService {
     return new ResponseEntity<void>(undefined);
   }
 
+  /**
+   * Finds a beer by its ID or throws a NotFoundException if not found.
+   * @param id The ID of the beer.
+   * @returns The found beer entity.
+   * @throws {NotFoundException} If the beer with the provided ID is not found.
+   */
   async findBeerById(id: number): Promise<BeerEntity> {
     const beer = await this.prisma.beer.findUnique({
       where: { id },
