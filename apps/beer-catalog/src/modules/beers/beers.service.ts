@@ -43,6 +43,7 @@ const FILTER_CONFIG: FilterConfig = {
   },
 };
 const ALLOWED_SORT_FIELDS = [
+  'id',
   'name',
   'abv',
   'createdAt',
