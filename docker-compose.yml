@@ -35,6 +35,68 @@ services:
     networks:
       - karhub-net
 
+  api-gateway:
+    container_name: karhub-api-gateway
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: api-gateway
+    ports:
+      - '${PORT}:${PORT}'
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      beer-catalog:
+        condition: service_started
+      beer-machine:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+      redis:
+        condition: service_started
+
+    networks:
+      - karhub-net
+
+  beer-catalog:
+    container_name: karhub-beer-catalog
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: beer-catalog
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      redis:
+        condition: service_started
+    networks:
+      - karhub-net
+
+  beer-machine:
+    container_name: karhub-beer-machine
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: beer-machine
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - karhub-net
+
 networks:
   karhub-net:
     driver: bridge
