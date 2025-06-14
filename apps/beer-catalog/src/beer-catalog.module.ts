@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from 'libs/core';
-import { BeerStylesModule, BeersModule } from './modules';
 import { ConfigModule } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
+import { BeerStylesModule, BeersModule, BreweriesModule } from './modules';
 
 @Module({
   imports: [
@@ -20,6 +20,7 @@ import { redisStore } from 'cache-manager-redis-store';
     PrismaModule,
     BeerStylesModule,
     BeersModule,
+    BreweriesModule,
   ],
   controllers: [],
   providers: [],

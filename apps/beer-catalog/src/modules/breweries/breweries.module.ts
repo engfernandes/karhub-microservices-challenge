@@ -4,6 +4,6 @@ import { BreweriesController } from './breweries.controller';
 
 @Module({
   providers: [BreweriesService],
-  controllers: [BreweriesController]
+  controllers: [BreweriesController],
 })
 export class BreweriesModule {}
