@@ -36,7 +36,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     } else if (exception instanceof RpcException) {
       const rpcError = exception.getError();
       message = typeof rpcError === 'object' ? rpcError['message'] : rpcError;
-      status = HttpStatus.INTERNAL_SERVER_ERROR; // Geralmente são erros 500
+      status = HttpStatus.INTERNAL_SERVER_ERROR;
     } else if (typeof exception === 'object' && exception) {
       if ('statusCode' in exception && 'message' in exception) {
         status = exception['statusCode'] as HttpStatus;
